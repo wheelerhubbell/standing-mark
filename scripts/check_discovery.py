@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Free discovery and local-vector checks. Never calls /v1/evaluate."""
-import base64,hashlib,json,subprocess,sys,urllib.request
+import base64,hashlib,json,subprocess,sys,urllib.request,shutil,importlib.util
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 BASE='https://decisionintegrity.wheelerhubbellpublishing.com'
@@ -18,6 +18,9 @@ def main():
     _,kid=client.pinned_key();checks.append({'check':'Python SDK contract and key consistency','status':'PASS','kid':kid})
     test_key='MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo='
     for runtime,file in [(sys.executable,'verification/verify.py'),('node','verification/verify.js')]:
+        if (runtime=='node' and not shutil.which('node')) or (runtime==sys.executable and importlib.util.find_spec('cryptography') is None):
+            checks.append({'check':file,'status':'SKIP','reason':'Install Node.js 18+ or the Python cryptography package to run this optional independent signature check.'})
+            continue
         r=subprocess.run([runtime,str(ROOT/file),str(ROOT/'verification/sample-test-key-envelope.json'),test_key],text=True,capture_output=True,check=True)
         assert 'VALID' in r.stdout
         checks.append({'check':file+' public test vector (not production)','status':'PASS'})

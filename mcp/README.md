@@ -39,3 +39,5 @@ python3 scripts/check_discovery.py
 There is no hosted `/mcp` endpoint in the production service. The checked-in `server.json` is source-install discovery metadata, not a claim of a published package or accepted registry record. No PyPI package is advertised.
 
 See [quick-start](../docs/quick-start.md), [payment](../docs/payment.md) and [independent verification](../docs/verification.md).
+
+For the full optional local-signature checks, install Node.js 18+ and the Python `cryptography` package. The discovery script reports SKIP for an unavailable signature runtime; the stdlib discovery and MCP checks still run.

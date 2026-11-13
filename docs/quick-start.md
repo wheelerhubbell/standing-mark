@@ -81,3 +81,5 @@ Offline, independently: run `verification/verify.py` or `verification/verify.js`
 ## Keep reusable evidence
 
 See [discovery-to-evidence loop](propagation-loop.md). Keep private payloads and payer identities out of public evidence. Publication and successful test calls are not evidence of external adoption.
+
+For the full optional local-signature checks, install Node.js 18+ and the Python `cryptography` package. The discovery script reports SKIP for an unavailable signature runtime; the stdlib discovery and MCP checks still run.
