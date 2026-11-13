@@ -26,7 +26,7 @@ In an MCP client, use the absolute local path after cloning:
 The adapter reads newline-delimited JSON-RPC on stdin and writes responses to stdout. It exposes `standing_contract`, `standing_issuer`, `standing_request_examination` and `standing_verify`.
 
 - `standing_contract` and `standing_issuer` accept `{}` and perform free GETs.
-- `standing_request_examination` accepts `{"claim": <the complete request object>}`. Without payment headers it requests a quote, not a paid examination. Keep the complete object unchanged on retry.
+- `standing_request_examination` accepts the examination request directly: `{"claim": "<the proposition, as a string>", "data": "<the examination material, as a string>", "provenance": {"source": ..., "evidence": [...]}, "warrant": ..., "requested_operation": "INFORM"}`. The accepted input schema is `input_schema` in the live contract: an object-valued `claim` is not a proposition and no field named `material` is read. Without payment headers it requests a quote, not a paid examination. Keep the complete object unchanged on retry.
 - `standing_verify` accepts `{"result": {"envelope": <signed envelope>, "public_key": "<SPKI DER base64>"}}`. This checks a signature only.
 - Only after the caller has authorized and sent the exact transfer, set `WHP_QUOTE_ID` and `WHP_PAYMENT_TX` for the identical examination retry. The adapter never holds keys, signs transfers or pays.
 

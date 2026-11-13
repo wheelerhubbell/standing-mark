@@ -9,8 +9,8 @@ TOOLS = [
    "inputSchema": {"type": "object", "properties": {}}},
   {"name": "standing_issuer", "description": "Read the published issuer identity (Ed25519 key).",
    "inputSchema": {"type": "object", "properties": {}}},
-  {"name": "standing_request_examination", "description": "Submit a claim or proposed action (JSON object) for examination. Unpaid calls return a price quote (402) bound to the exact bytes. After paying the quote on Base, set WHP_QUOTE_ID and WHP_PAYMENT_TX and repeat to receive the signed result.",
-   "inputSchema": {"type": "object", "properties": {"claim": {"type": "object"}}, "required": ["claim"]}},
+  {"name": "standing_request_examination", "description": "Submit an examination request in the accepted input schema (GET /v1/contract, field input_schema): the proposition as a string 'claim' and the examination material as a string 'data', with provenance.source, provenance.evidence and an authority warrant as applicable. An object-valued 'claim' is not a proposition and no field named 'material' is read. Unpaid calls return a price quote (402) bound to the exact bytes. After paying the quote on Base, set WHP_QUOTE_ID and WHP_PAYMENT_TX and repeat to receive the signed result.",
+   "inputSchema": {"type": "object", "properties": {"claim": {"type": "string", "description": "The proposition examined."}, "data": {"type": "string", "description": "The examination material."}, "subject": {"type": "string"}, "source": {"type": "string"}, "provenance": {"type": "object", "description": "source, authority, evidence[], qualifiers[]"}, "warrant": {"type": "string"}, "requested_operation": {"type": "string", "enum": ["DESCRIBE", "INFORM", "INQUIRE", "WARN", "REVIEW", "RECOMMEND", "CONCLUDE", "EXECUTE"]}}, "required": ["claim"]}},
   {"name": "standing_verify", "description": "Check a signed Standing Mark result (signature only). Pass {\"envelope\": <signed result>, \"public_key\": <SPKI DER base64 from standing_issuer>}.",
    "inputSchema": {"type": "object", "properties": {"result": {"type": "object"}}, "required": ["result"]}},
 ]
@@ -33,7 +33,7 @@ def call(name, args):
         h = {}
         if os.environ.get("WHP_QUOTE_ID") and os.environ.get("WHP_PAYMENT_TX"):
             h = {"X-WHP-Quote": os.environ["WHP_QUOTE_ID"], "X-WHP-Payment-Tx": os.environ["WHP_PAYMENT_TX"]}
-        return http("POST", "/v1/evaluate", args["claim"], h)[1]
+        return http("POST", "/v1/evaluate", args, h)[1]
     if name == "standing_verify": return http("POST", "/v1/verification", args["result"])[1]
     return {"error": "unknown tool"}
 

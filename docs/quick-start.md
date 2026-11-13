@@ -36,10 +36,19 @@ The key is Ed25519, SPKI DER base64. Its key id is the lowercase hex SHA-256 of 
 POST /v1/evaluate
 Content-Type: application/json
 
-{"claim": {...}, "material": {...}}
+{
+  "claim": "The proposition to examine, as a string.",
+  "data": "The supporting material the examination reads, as a string.",
+  "provenance": {
+    "source": "https://example.org/where-the-material-comes-from",
+    "evidence": ["A verbatim statement from the material."]
+  },
+  "warrant": "Why the requested operation is warranted (required at RECOMMEND and above).",
+  "requested_operation": "INFORM"
+}
 ```
 
-Submit the claim or proposed action with its supporting material. Submissions must be strict JSON under the service's canonical rule: safe integers only (no floats, no -0, no integers beyond ±2^53-1), no duplicate object keys, well-formed Unicode, at most 64 levels deep and 262144 bytes. See `docs/rejection-boundary.md`.
+Submit the claim or proposed action with its supporting material in the accepted input schema. The evaluator reads the proposition from a string `claim` (or `subject`, or `object.id`) and the examination material from a string `data`. When no `data` string is supplied, the claim itself is the examined material (an explicit, recorded fallback). An object-valued `claim` is not a proposition and no field named `material` is read: a request with no readable proposition and no readable material is examined over zero bytes. The authoritative field list is `input_schema` in the live contract at `GET /v1/contract` (mirrored in `openapi.json`). Submissions must be strict JSON under the service's canonical rule: safe integers only (no floats, no -0, no integers beyond ±2^53-1), no duplicate object keys, well-formed Unicode, at most 64 levels deep and 262144 bytes. See `docs/rejection-boundary.md`.
 
 An unpaid request is answered `402 PAYMENT_REQUIRED` with a quote under `payment_required`: `quote_id`, `amount_units` (USDC atomic units, 6 decimals), `pay_to`, `expires` (epoch seconds). The quote is bound to the exact request bytes; changing one byte produces a different quote. Quotes self-expire; an unpaid quote consumes nothing.
 

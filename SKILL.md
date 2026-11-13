@@ -17,8 +17,8 @@ Standing Mark is an independent examination service operated by Wheeler Hubbell 
 
 ## Invocation
 
-1. Read the live contract first; treat it as authoritative over any copy, including this file.
-2. `POST /v1/evaluate` with the complete claim object as JSON. An unpaid request returns HTTP 402 with `payment_required` carrying `quote_id`, `amount_units`, `pay_to` and `expires`.
+1. Read the live contract first; treat it as authoritative over any copy, including this file. Its `input_schema` field is the authoritative list of the fields the evaluator reads.
+2. `POST /v1/evaluate` with a JSON object in that input schema: the proposition as a string `claim` (or `subject`, or `object.id`), the examination material as a string `data`, plus `provenance.source`, `provenance.evidence` and an authority `warrant` as applicable. With no `data` string, the claim itself is the examined material (a recorded fallback). An object-valued `claim` is not a proposition and no field named `material` is read; a request with no readable proposition and no readable material is examined over zero bytes. An unpaid request returns HTTP 402 with `payment_required` carrying `quote_id`, `amount_units`, `pay_to` and `expires`.
 3. Keep the exact request bytes unchanged. The quote ID is bound to the SHA-256 of those bytes; any change requires a new quote.
 
 ## Payment boundaries

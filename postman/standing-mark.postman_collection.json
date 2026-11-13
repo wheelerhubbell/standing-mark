@@ -125,7 +125,7 @@
         "description": "Unpaid request returns HTTP 402 with a quote bound to the exact request bytes.",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"claim\": {\n    \"type\": \"proposed_action\",\n    \"actor\": \"example-agent\",\n    \"action\": \"describe the proposed action\",\n    \"warrant\": \"why it is warranted\",\n    \"conditions\": []\n  },\n  \"material\": {\n    \"note\": \"supporting material the examination reads\"\n  }\n}"
+          "raw": "{\n  \"claim\": \"The proposition to examine, as a string.\",\n  \"data\": \"The supporting material the examination reads, as a string.\",\n  \"provenance\": {\n    \"source\": \"https://example.org/where-the-material-comes-from\",\n    \"evidence\": [\"A verbatim statement from the material.\"]\n  },\n  \"warrant\": \"Why the requested operation is warranted (required at RECOMMEND and above).\",\n  \"requested_operation\": \"INFORM\"\n}"
         }
       }
     },

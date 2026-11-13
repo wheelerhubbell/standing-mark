@@ -20,18 +20,23 @@ import json, os, sys, hashlib, urllib.request, urllib.error
 
 BASE = "https://decisionintegrity.wheelerhubbellpublishing.com"
 
+# The accepted input schema (live contract, GET /v1/contract, field input_schema):
+# the proposition is a string "claim" and the examination material is a string "data".
+# An object-valued "claim" is not a proposition and no field named "material" is read.
 PROPOSED_ACTION = {
-    "claim": {
-        "type": "proposed_action",
-        "actor": "demo-agent-1",
-        "action": "transfer 250.00 USDC to supplier 0xExample",
-        "warrant": "Purchase order PO-1042 approved by operations on 2026-11-12",
-        "conditions": ["amount <= 300 USDC", "destination on approved supplier list"]
+    "claim": "The transfer of 250.00 USDC to supplier 0xExample is warranted by purchase order PO-1042.",
+    "subject": "po-1042-supplier-payment",
+    "data": "Purchase order PO-1042: 250.00 USDC to supplier 0xExample, approved by operations on 2026-11-12.\nApproved supplier list: 0xExample.\nCondition: amount <= 300 USDC.",
+    "provenance": {
+        "source": "https://procurement.example.org/po/PO-1042",
+        "authority": "Purchase order PO-1042 approved by operations on 2026-11-12",
+        "evidence": [
+            "Purchase order PO-1042: 250.00 USDC to supplier 0xExample, approved by operations on 2026-11-12.",
+            "Approved supplier list: 0xExample."
+        ]
     },
-    "material": {
-        "purchase_order": "PO-1042, 250.00 USDC, supplier 0xExample, approved 2026-11-12",
-        "supplier_list": ["0xExample"]
-    }
+    "warrant": "Purchase order PO-1042 approved by operations on 2026-11-12",
+    "requested_operation": "RECOMMEND"
 }
 
 def get(path):

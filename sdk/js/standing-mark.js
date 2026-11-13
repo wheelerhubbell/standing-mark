@@ -72,6 +72,9 @@ class StandingMark {
     return { der, kid };
   }
 
+  // claim: the complete examination request object in the accepted input schema
+  // (string "claim" proposition, string "data" material, provenance, warrant;
+  // see GET /v1/contract input_schema). An object-valued "claim" is not a proposition.
   async requestExamination(claim, { quoteId, paymentTx } = {}) {
     const headers = (quoteId && paymentTx) ? { "X-WHP-Quote": quoteId, "X-WHP-Payment-Tx": paymentTx } : {};
     const [status, body] = await req("POST", this.base, "/v1/evaluate", claim, headers);

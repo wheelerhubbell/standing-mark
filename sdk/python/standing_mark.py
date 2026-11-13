@@ -52,7 +52,7 @@ class StandingMark:
         return der, kid
 
     def request_examination(self, claim, quote_id=None, payment_tx=None):
-        """Submit a claim or proposed action (dict). Unpaid: raises QuoteRequired
+        """Submit an examination request (dict in the accepted input schema: string "claim" proposition, string "data" material, provenance, warrant; see GET /v1/contract input_schema). Unpaid: raises QuoteRequired
         with the quote (bound to the exact request bytes). With quote_id and
         payment_tx after paying the quote on Base: returns the signed result."""
         headers = {}
