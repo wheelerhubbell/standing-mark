@@ -19,7 +19,7 @@ Signed results are type `WHP-STANDING-MARK-v1`: Ed25519 over the WHP-JCS-I1 cano
 
 ## Vector 3 — live quote shape
 
-An unpaid `POST /v1/evaluate` returns HTTP 402 with `error` `PAYMENT_REQUIRED` and `payment_required` carrying `scheme` (`WHP-BASE-USDC-QUOTE-1`), `network` (`eip155:8453`), `asset`, `pay_to`, `price_floor_units` (1000000), `decimals` (6), `min_confirmations` (5), `quote_id`, `amount_units` (1000001-1009999) and `expires` (epoch seconds). Observed November 13, 2026: amounts 1001125-1008482 across four requests. Unpaid quotes self-expire.
+An unpaid `POST /v1/evaluate` returns HTTP 402 with `error` `PAYMENT_REQUIRED` and `payment_required` carrying `scheme` (`WHP-BASE-USDC-FLAT-1`), `network` (`eip155:8453`), `asset`, `pay_to`, `decimals` (6), `min_confirmations` (5), `quote_id`, `amount_units` (exactly 1000000, i.e. 1.00 USDC) and `expires` (epoch seconds). The amount is fixed, not a quote identifier. Unpaid quotes self-expire.
 
 ## Reproducing
 

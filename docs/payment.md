@@ -1,15 +1,15 @@
-# The payment mechanism: WHP-BASE-USDC-QUOTE-1
+# The payment mechanism: WHP-BASE-USDC-FLAT-1
 
 The live contract at `GET /v1/contract` is authoritative. Summary as of November 13, 2026:
 
-- Scheme: `WHP-BASE-USDC-QUOTE-1`. This is not x402-exact and is not represented as x402.
+- Scheme: `WHP-BASE-USDC-FLAT-1`. This is not x402-exact and is not represented as x402.
 - Network: `eip155:8453` (Base). Asset: USDC `0x833589fcd6edb6e08f4c7c32d4f71b54bda02913`, 6 decimals.
-- Price: 1.000001 to 1.009999 USDC per examination, subject to operator approval. The exact amount is per-quote.
+- Price: exactly 1.00 USDC per examination (`amount_units` 1000000, exact match).
 - Minimum confirmations: 5.
 
 ## Request binding
 
-The quote is bound to the exact request bytes. `POST /v1/evaluate` without payment returns 402 with `payment_required.quote_id`, `amount_units`, `pay_to` and `expires`. The same bytes always price within the declared range; different bytes get their own quote. To complete, retry the identical body with `X-WHP-Quote` and `X-WHP-Payment-Tx` (the on-chain transaction hash). A quote that is not paid expires on its own and consumes nothing.
+The quote ID is bound to the SHA-256 of the exact request bytes and each transaction hash is single-use; the payment amount is fixed, not a quote identifier. `POST /v1/evaluate` without payment returns 402 with `payment_required.quote_id`, `amount_units`, `pay_to` and `expires`. To complete, retry the identical body with `X-WHP-Quote` and `X-WHP-Payment-Tx` (the on-chain transaction hash). A quote that is not paid expires on its own and consumes nothing.
 
 ## Economic rule
 

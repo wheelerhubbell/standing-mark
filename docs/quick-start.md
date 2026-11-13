@@ -20,7 +20,7 @@ This checks live discovery, SDK key consistency and local test-vector signatures
 GET /v1/contract
 ```
 
-Returns the profile, the four routes, the payment terms (scheme `WHP-BASE-USDC-QUOTE-1`, network `eip155:8453`, USDC asset, price range 1.000001 to 1.009999 USDC, pay_to address, minimum 5 confirmations), the determinism rule, the signed result type and the published issuer key reference.
+Returns the profile, the four routes, the payment terms (scheme `WHP-BASE-USDC-FLAT-1`, network `eip155:8453`, USDC asset, fixed price exactly 1.00 USDC, pay_to address, minimum 5 confirmations), the determinism rule, the signed result type and the published issuer key reference.
 
 ## 2. Pin the issuer key
 

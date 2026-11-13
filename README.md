@@ -32,6 +32,6 @@ This repository holds the public developer assets for the service:
 
 Payment buys an examination, not a positive finding. Results are signed (type `WHP-STANDING-MARK-v1`, Ed25519, canonicalization `WHP-JCS-I1`) and anyone can verify a signature against the published issuer key. Signature verification establishes cryptographic validity, not the substantive correctness of a claim.
 
-The payment scheme is `WHP-BASE-USDC-QUOTE-1` (a price quote in USDC on Base, bound to the exact request bytes). It is not x402-exact and is not represented as x402.
+The payment scheme is `WHP-BASE-USDC-FLAT-1`: exactly 1.00 USDC on Base per examination. The quote ID is bound to the SHA-256 of the exact request bytes and each transaction hash is single-use; the amount is fixed, not a quote identifier. It is not x402-exact and is not represented as x402.
 
 The A2A card is descriptive only: the service does not implement native A2A transport. The MCP adapter installs from source; no hosted MCP endpoint or published PyPI package is claimed.

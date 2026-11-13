@@ -1,6 +1,6 @@
 # Standing Mark MCP adapter
 
-A local stdio adapter for the HTTP examination service operated by Wheeler Hubbell Publishing, Inc. Python 3.9+ is sufficient; no third-party runtime packages, API key or new account are needed to read the contract and issuer key. Paid examinations require a caller-authorized USDC transfer on Base.
+A local stdio adapter for the HTTP examination service operated by Wheeler Hubbell Publishing, Inc. Python 3.9+ is sufficient; no third-party runtime packages, API key or new account are needed to read the contract and issuer key. Paid examinations require a caller-authorized transfer of exactly 1.00 USDC on Base (scheme `WHP-BASE-USDC-FLAT-1`, not x402-exact).
 
 ## Install from source
 
