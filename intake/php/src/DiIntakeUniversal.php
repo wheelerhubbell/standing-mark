@@ -121,6 +121,7 @@ final class DiIuRec {
     public array $contradictions = []; public array $alternatives = []; public array $ignored = [];
     public DiIuObj $trace; public ?string $claim = null; public ?string $data = null; public ?string $src = null; public ?string $warrant = null;
     public $op = null; public array $evidence = []; public array $multi = []; public array $parts = [];
+    public $passthrough = null; public ?string $fbKey = null;
     public function __construct(string $rawSha, int $bytes, string $media) {
         $this->trace = new DiIuObj();
         $this->source = ['original_sha256' => $rawSha, 'bytes' => $bytes, 'media_type' => $media, 'caller_fields' => new DiIuObj()];
@@ -212,6 +213,10 @@ final class DiIntakeUniversal {
                 $canon[] = $b;
             }
         } elseif ($level !== 'NOT_EXAMINABLE') { $level = 'NOT_EXAMINABLE'; }
+        if ($r->passthrough !== null) {
+            $missing = []; $level = 'EXAMINABLE'; $canon = [$r->passthrough];
+            $notes[] = 'Engine-native submission passed through unchanged; intake did not inspect its nodes. The examination decides what is established.';
+        }
         $cj = array_map(fn($c) => self::dumps($c, true, true, false), $canon);
         $gate = ['NOT_EXAMINABLE' => 'NO_QUOTE', 'EXAMINABLE_WITH_LIMITS' => 'QUOTE_ONLY_WITH_DISCLOSURE_AND_INFORMED_CHOICE', 'EXAMINABLE' => 'QUOTE_ALLOWED'];
         $record = [
@@ -276,6 +281,11 @@ final class DiIntakeUniversal {
             $w = new DiIuObj(); $w->set('items', $obj); $obj = $w;
         }
         if (!($obj instanceof DiIuObj)) { $r->issue('UNSUPPORTED_SHAPE', 'top-level JSON is a scalar'); return; }
+        if ($obj->get('version') === 'WHP-STANDING-SUBMISSION-v1' && is_array($obj->get('nodes')) && count($obj->get('nodes')) > 0) {
+            $r->passthrough = $obj;
+            $r->interp('submission is already an engine-native WHP-STANDING-SUBMISSION-v1 object; passed through unchanged', '', 'R-SUBMISSION-V1-PASSTHROUGH');
+            return;
+        }
         foreach ($obj->keys() as $k) {
             if (in_array(mb_strtolower($k, 'UTF-8'), self::STANDING, true)) {
                 $r->source['caller_fields']->set($k, $obj->get($k));
@@ -309,9 +319,19 @@ final class DiIntakeUniversal {
         } elseif (count($r->multi) === 1 && $r->claim === null) {
             $r->claim = $r->multi[0][0]; $r->trace->set('claim', $r->ext('proposition', $r->claim, $r->multi[0][1], 'R-JSON-CLAIM-LIST'));
         }
+        if ($r->claim === null && count($r->multi) === 0 && count($r->issues) === 0) {
+            foreach (['data', 'text', 'prompt', 'content', 'input'] as $k) {
+                if (self::isStr($obj->get($k))) {
+                    $r->claim = $obj->get($k); $r->fbKey = $k;
+                    $r->trace->set('claim', $r->ext('proposition', $r->claim, '/' . $k, 'R-JSON-PROPOSITION-FALLBACK'));
+                    $r->interp("no claim field; the string in $k is read as the proposition (the examination engine's documented fallback order: data, text, prompt, content, input)", '/' . $k, 'R-JSON-PROPOSITION-FALLBACK');
+                    break;
+                }
+            }
+        }
         $parts = [];
         foreach (self::MATERIAL_KEYS as $k) {
-            if ($obj->has($k)) {
+            if ($obj->has($k) && $k !== $r->fbKey) {
                 $v = $obj->get($k);
                 if (self::isStr($v)) { $parts[] = ['/' . $k, $v]; }
                 elseif ($v instanceof DiIuObj || is_array($v)) { foreach (self::flatten($v, '/' . $k) as [$ptr, $t]) { $parts[] = [$ptr, self::lab($ptr, $t)]; } }

@@ -157,3 +157,25 @@ def test_no_standing_language_in_output_beyond_does_not_establish():
 def test_document_with_labels_in_mixed_case_and_crlf():
     r = intake("claim: %s\r\nEVIDENCE:\r\n%s\r\nsource: %s" % (C, M[0], SRC))
     assert lvl(r) == "EXAMINABLE" or lvl(r) == "NOT_EXAMINABLE"   # CRLF handled below
+
+
+# ---- engine-accepted shapes (fallback fields, data-only, native submission) ----
+@pytest.mark.parametrize("key", ["data", "text", "prompt", "content", "input"])
+def test_flat_fallback_fields_are_read_as_the_proposition_with_limits(key):
+    r = intake({key: "The invoice is payable."})
+    assert lvl(r) == "EXAMINABLE_WITH_LIMITS"
+    assert canon(r)[0]["claim"] == "The invoice is payable." and "data" not in canon(r)[0]
+    assert r["interpreted"][0]["rule"] == "R-JSON-PROPOSITION-FALLBACK"
+
+def test_claim_field_wins_over_fallback_fields_and_they_stay_material():
+    b = canon(intake({"claim": C, "text": "t", "prompt": "p"}))[0]
+    assert b["claim"] == C and "t" in b["data"] and "p" in b["data"]
+
+def test_fallback_does_not_mask_a_non_text_claim():
+    assert lvl(intake({"claim": 5, "text": "t"})) == "NOT_EXAMINABLE"
+
+def test_native_submission_passes_through_unchanged():
+    sub = {"version": "WHP-STANDING-SUBMISSION-v1", "nodes": [{"id": "n1"}], "profile": {"version": "7.0.0"}}
+    r = intake(sub)
+    assert lvl(r) == "EXAMINABLE" and canon(r) == [sub]
+    assert intake({"version": "WHP-STANDING-SUBMISSION-v1", "nodes": []})["examinability"]["level"] == "NOT_EXAMINABLE"

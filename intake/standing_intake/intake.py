@@ -74,6 +74,7 @@ class _Rec:
         self.contradictions, self.alternatives, self.ignored, self.canonical_trace = [], [], [], {}
         self.claim = self.data = self.src = self.warrant = self.op = None
         self.evidence, self.multi = [], []
+        self.passthrough = None; self.fb_key = None
     def ext(self, kind, text, pointer, rule):
         i = "x%d" % (len(self.extracted) + 1); self.extracted.append({"id": i, "kind": kind, "text": text, "pointer": pointer, "rule": rule}); return i
     def interp(self, what, ref, rule): self.interpreted.append({"what": what, "from": ref, "rule": rule})
@@ -90,6 +91,10 @@ def _from_json(r, obj):
         obj = {"items": obj}
     if not isinstance(obj, dict):
         r.issue("UNSUPPORTED_SHAPE", "top-level JSON is a scalar"); return
+    if obj.get("version") == "WHP-STANDING-SUBMISSION-v1" and isinstance(obj.get("nodes"), list) and obj["nodes"]:
+        r.passthrough = obj
+        r.interp("submission is already an engine-native WHP-STANDING-SUBMISSION-v1 object; passed through unchanged", "", "R-SUBMISSION-V1-PASSTHROUGH")
+        return
     for k in obj:
         if k.lower() in STANDING_ASSERTIONS:
             r.source["caller_fields"][k] = obj[k]; r.ignored.append({"field": k, "reason": "caller assertion of standing; recorded, never evidence"})
@@ -117,10 +122,17 @@ def _from_json(r, obj):
         r.interp("%d separate propositions supplied by the caller; each is examined separately" % len(r.multi), "", "R-MULTI-PROPOSITION")
     elif len(r.multi) == 1 and r.claim is None:
         r.claim = r.multi[0][0]; r.canonical_trace["claim"] = r.ext("proposition", r.claim, r.multi[0][1], "R-JSON-CLAIM-LIST")
+    r.fb_key = None
+    if r.claim is None and not r.multi and not r.issues:
+        for k in ("data", "text", "prompt", "content", "input"):
+            if _is_str(obj.get(k)):
+                r.claim = obj[k]; r.fb_key = k; r.canonical_trace["claim"] = r.ext("proposition", r.claim, "/" + k, "R-JSON-PROPOSITION-FALLBACK")
+                r.interp("no claim field; the string in %s is read as the proposition (the examination engine's documented fallback order: data, text, prompt, content, input)" % k, "/" + k, "R-JSON-PROPOSITION-FALLBACK")
+                break
     # material
     parts = []
     for k in MATERIAL_KEYS:
-        if k in obj and not (k in CLAIM_KEYS and obj[k] is r.claim):
+        if k in obj and not (k in CLAIM_KEYS and obj[k] is r.claim) and k != r.fb_key:
             v = obj[k]
             if _is_str(v):
                 parts.append((("/" + k), v))
@@ -243,6 +255,9 @@ def intake(submission, media_type=None):
             if r.warrant: b["warrant"] = r.warrant
             canon.append(b)
     elif level != "NOT_EXAMINABLE": level = "NOT_EXAMINABLE"
+    if r.passthrough is not None:
+        missing = []; level = "EXAMINABLE"; canon = [r.passthrough]
+        notes.append("Engine-native submission passed through unchanged; intake did not inspect its nodes. The examination decides what is established.")
     cj = [json.dumps(c, sort_keys=True, separators=(",", ":"), ensure_ascii=False) for c in canon]
     record = {
         "intake_version": INTAKE_VERSION,

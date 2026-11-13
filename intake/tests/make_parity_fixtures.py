@@ -58,6 +58,16 @@ cases = {
  "data_str_with_nested": J({"claim": C, "data": "str", "material": {"price": "1"}}),
  "files_bad": J({"claim": C, "files": [1, {"text": ""}, {"text": "ok"}]}),
 }
+cases.update({
+ "fb_text": J({"text": "The invoice is payable."}), "fb_prompt": J({"prompt": "Is it payable?", "source": S}), "fb_content": J({"content": "c1"}),
+ "fb_input": J({"input": "i1", "requested_operation": "WARN"}), "fb_data_only": J({"data": "Only data here."}),
+ "fb_order": J({"input": "i", "content": "c", "text": "t", "data": "d"}), "fb_data_and_text": J({"data": "d", "text": "t"}),
+ "fb_claim_wins": J({"claim": C, "text": "t", "prompt": "p"}), "fb_data_obj_only": J({"data": {"claim": "x"}}),
+ "fb_blank": J({"data": "  ", "text": "t"}), "fb_not_text_issue": J({"claim": 5, "text": "t"}),
+ "v1_pass": J({"version": "WHP-STANDING-SUBMISSION-v1", "nodes": [{"id": "n1", "content": {"text": "x", "n": 1.5}}], "outcome": "X", "profile": {"version": "7.0.0"}}),
+ "v1_empty_nodes": J({"version": "WHP-STANDING-SUBMISSION-v1", "nodes": [], "claim": C, "data": "d"}),
+ "v1_wrong_version": J({"version": "other", "nodes": [1], "claim": C}),
+})
 out = []
 for name, raw in cases.items():
     mt = None
