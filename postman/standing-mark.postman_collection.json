@@ -1,0 +1,195 @@
+{
+  "info": {
+    "name": "Standing Mark",
+    "description": "Standing Mark is an independent examination service operated by Wheeler Hubbell Publishing, Inc. It examines claims and proposed actions and returns a signed result stating what is established and what is not. It does not execute, authorize, pay or settle. Source of truth: GET /v1/contract on the live host. Generated from the published openapi.json.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://decisionintegrity.wheelerhubbellpublishing.com"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "health"
+          ]
+        },
+        "description": "Service status."
+      }
+    },
+    {
+      "name": "Contract",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/v1/contract",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "contract"
+          ]
+        },
+        "description": "Live machine-readable contract: routes, payment terms, limits."
+      }
+    },
+    {
+      "name": "Discovery document",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/.well-known/whp-standing.json",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            ".well-known",
+            "whp-standing.json"
+          ]
+        },
+        "description": "Same content as /v1/contract."
+      }
+    },
+    {
+      "name": "Issuer identity",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/.well-known/whp-issuer.json",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            ".well-known",
+            "whp-issuer.json"
+          ]
+        },
+        "description": "Published Ed25519 issuer key and key id."
+      }
+    },
+    {
+      "name": "Request examination (quote)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/v1/evaluate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "evaluate"
+          ]
+        },
+        "description": "Unpaid request returns HTTP 402 with a quote bound to the exact request bytes.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"claim\": {\n    \"type\": \"proposed_action\",\n    \"actor\": \"example-agent\",\n    \"action\": \"describe the proposed action\",\n    \"warrant\": \"why it is warranted\",\n    \"conditions\": []\n  },\n  \"material\": {\n    \"note\": \"supporting material the examination reads\"\n  }\n}"
+        }
+      }
+    },
+    {
+      "name": "Request examination (paid retry)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-WHP-Quote",
+            "value": "{{quote_id}}"
+          },
+          {
+            "key": "X-WHP-Payment-Tx",
+            "value": "{{payment_tx}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/v1/evaluate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "evaluate"
+          ]
+        },
+        "description": "After paying the quote on Base, retry the identical body with X-WHP-Quote and X-WHP-Payment-Tx.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"claim\": {\n    \"type\": \"proposed_action\",\n    \"actor\": \"example-agent\",\n    \"action\": \"identical body to the quoted request\"\n  }\n}"
+        }
+      }
+    },
+    {
+      "name": "Verify a signed result",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/v1/verification",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "verification"
+          ]
+        },
+        "description": "Server-side signature check only (see the contract's scope note).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"envelope\": {\n    \"protected\": {},\n    \"payload\": {},\n    \"signature\": \"base64\"\n  },\n  \"public_key\": \"SPKI DER base64 from /.well-known/whp-issuer.json\"\n}"
+        }
+      }
+    }
+  ]
+}

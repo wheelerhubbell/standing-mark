@@ -1,0 +1,547 @@
+{
+  "envelope": {
+    "payload": {
+      "completeness": {
+        "epistemic_limitation": "A completeness declaration records the submitter's assertion and the inventory of materials supplied to the examination; it cannot prove that undisclosed documents, side agreements, or adverse records do not exist outside the submitted packet.",
+        "submitter_completeness_declaration": "DECLARED_COMPLETE_FOR_STATED_SCOPE",
+        "supplied_materials_inventory": [
+          {
+            "item_id": "eval-baed1632ff04dc7e",
+            "kind": "PASSAGE",
+            "locator": "urn:source:unverified",
+            "sha256": "8c1089c5df5424aca08a2d120e8eb242536f38a048642534251dbdf7b2ea788e"
+          }
+        ]
+      },
+      "current_status_rule": "This immutable record proves issuance-time examination of the exact bound object. Current standing requires a fresh signed registry response and current trust/revocation information.",
+      "data_handling": {
+        "deletion_policy": "Registry records are append-only for audit lineage; buyers may request redaction of non-digest payload text where permitted by contract.",
+        "inference_provider": "none - no model inference",
+        "retention_policy": "Signed Standing Mark Record retained in append-only purchase registry; unsubmitted client data is never retained.",
+        "storage_policy": "Immutable signed result stored by purchase_id for buyer retrieval and recovery; temporary working buffers discarded after signing.",
+        "training_use_policy": "PROHIBITED \u2014 Wheeler Hubbell Publishing never uses submitted client data to train or fine-tune models.",
+        "transmitted_fields": [],
+        "transmitted_to_external_provider": false
+      },
+      "decision_record": {
+        "assessment_boundary": "Single-door evaluation (/v1/evaluate): the deterministic Decision Integrity engine (The Continuous Work, version 7, encoded in code and pinned by hash) is the sole evaluator; no language model is invoked and no submitted data is transmitted to any external provider; the result is coupled with cryptographic Standing Mark signing.",
+        "bounds": {
+          "jurisdiction": "wheeler-hubbell-publishing",
+          "scope": "whp-sovereign-standing",
+          "valid_from": 1762819140,
+          "valid_until": 1762905600
+        },
+        "checks": [
+          {
+            "detail": "Root hash, identifier and version must identify the same submitted object.",
+            "object": "307a9281ff797570b37085a3a31d3c7a1a56f55efc72ca1b8d4208407fd86e42",
+            "passed": true,
+            "rule": "SOURCE_IDENTITY"
+          },
+          {
+            "detail": "The assessment must fall within the requested time window.",
+            "object": "307a9281ff797570b37085a3a31d3c7a1a56f55efc72ca1b8d4208407fd86e42",
+            "passed": true,
+            "rule": "ASSESSMENT_TIME"
+          },
+          {
+            "detail": "An admitted source key must attest within its signed scope, operations and validity.",
+            "object": "307a9281ff797570b37085a3a31d3c7a1a56f55efc72ca1b8d4208407fd86e42",
+            "passed": false,
+            "rule": "SOURCE_AUTHORITY"
+          },
+          {
+            "detail": "Non-active source versions cannot carry operative standing in this profile.",
+            "object": "307a9281ff797570b37085a3a31d3c7a1a56f55efc72ca1b8d4208407fd86e42",
+            "passed": true,
+            "rule": "SOURCE_ACTIVE"
+          },
+          {
+            "detail": "Source jurisdiction and scope must match the requested bounds exactly.",
+            "object": "307a9281ff797570b37085a3a31d3c7a1a56f55efc72ca1b8d4208407fd86e42",
+            "passed": true,
+            "rule": "SOURCE_BOUNDS"
+          },
+          {
+            "detail": "Source validity must contain the requested time window.",
+            "object": "307a9281ff797570b37085a3a31d3c7a1a56f55efc72ca1b8d4208407fd86e42",
+            "passed": true,
+            "rule": "SOURCE_TIME"
+          },
+          {
+            "detail": "Every submitted source must be connected to the root; cycles and missing references are forbidden.",
+            "object": "307a9281ff797570b37085a3a31d3c7a1a56f55efc72ca1b8d4208407fd86e42",
+            "passed": true,
+            "rule": "GRAPH_CLOSURE"
+          },
+          {
+            "detail": "The requested operation must survive every source, warrant and unresolved blocking unknown.",
+            "object": "307a9281ff797570b37085a3a31d3c7a1a56f55efc72ca1b8d4208407fd86e42",
+            "passed": false,
+            "rule": "REQUESTED_OPERATION"
+          }
+        ],
+        "components": {
+          "ACTION_BOUNDARY": "NOT_ASSESSED",
+          "CONTEXT": "ESTABLISHED",
+          "CONTINUITY": "NOT_ASSESSED",
+          "PASSAGE": "NOT_ESTABLISHED",
+          "RELATION": "NOT_ASSESSED",
+          "SOURCE": "NOT_ESTABLISHED",
+          "UNKNOWN": "ESTABLISHED"
+        },
+        "decision_integrity_examination": {
+          "authoritative": true,
+          "canon": {
+            "id": "WHP-DECISION-INTEGRITY-V7",
+            "sha256": "bd85f51f05afc6f77053aec086a1d013a1cccde70c30231622f0ecc7e3f25c21",
+            "version": "7.0.0"
+          },
+          "conflicts": [],
+          "continuity": {
+            "changed_conditions": null,
+            "named_failures": [],
+            "rule": "INHERITANCE_RULE",
+            "status": "NO_PRIOR_EXAMINATION_ASSERTED"
+          },
+          "determination": "TRANSITION_DENIED",
+          "document_examination": null,
+          "emission": {
+            "accuracy_over_fluency": "Where material elements remain unresolved, the result names them rather than filling the gap (canon 955-962, 973).",
+            "conditional_form": [
+              {
+                "if": "Supply a signed source attestation, the source content, or a resolvable source reference.",
+                "then": "the proposition's use as support for the requested operation may become available"
+              },
+              {
+                "if": "Name the authority or warrant that entitles the requested operation.",
+                "then": "any operation crossing the decision boundary may become available"
+              }
+            ],
+            "rule": "EMISSION_CONTROLS",
+            "statuses_visible": true
+          },
+          "examination_material": {
+            "bytes": 1,
+            "fallback": true,
+            "fallback_note": "No separate examination material was supplied; the claim itself is the examined material. This is an explicit fallback, not a substitution (canon 159-172).",
+            "field": "claim",
+            "question": "X",
+            "sha256": "4b68ab3847feda7d6c62c1fbcbeebfa35eab7351ed5e78f4ddadea5df64b8015"
+          },
+          "invocation": {
+            "crosses_decision_boundary": false,
+            "defects": [],
+            "force_level": 2,
+            "proposition": "X",
+            "requested_operation": "INFORM",
+            "rule": "INVOCATION"
+          },
+          "material_relations": [],
+          "named_failures": [
+            {
+              "detail": "The requested operation asks the record to exercise more force than its source, conditions, and warrant establish (canon 451-476).",
+              "kind": "AUTHORITY_LEAKAGE",
+              "rule": "AUTHORITY_LEAKAGE"
+            }
+          ],
+          "named_missing_objects": [
+            {
+              "limits": [
+                "the proposition's use as support for the requested operation"
+              ],
+              "missing_object": "a retrievable source for the proposition",
+              "rule": "NAMED_MISSING_OBJECT",
+              "why_it_matters": "A claim that asserts an external source may hold premise-standing only with a retrievable source; without one it carries the standing of unknown (canon 955-956).",
+              "would_resolve": "Supply a signed source attestation, the source content, or a resolvable source reference."
+            },
+            {
+              "limits": [
+                "any operation crossing the decision boundary"
+              ],
+              "missing_object": "a warrant for the requested transition",
+              "rule": "NAMED_MISSING_OBJECT",
+              "why_it_matters": "Every material transition must be expressly permitted by a governing rule or supported by an inspectable warrant adequate to the transition (canon 295-296).",
+              "would_resolve": "Name the authority or warrant that entitles the requested operation."
+            }
+          ],
+          "passage": {
+            "checks": [
+              {
+                "basis": "The proposition named at invocation is the object examined (canon 159-172); no substitute object is introduced by the examination.",
+                "check": "OBJECT_PRESERVED",
+                "passed": true,
+                "rule": "OBJECT_PRESERVATION"
+              },
+              {
+                "basis": "A condition that changes meaning, burden, authority, scope, time, or permitted action is part of the element and must travel with it (canon 211).",
+                "carried_qualifiers": [],
+                "check": "CONDITIONS_TRAVEL",
+                "passed": true,
+                "rule": "CONDITIONS_TRAVEL"
+              },
+              {
+                "basis": "Relations have independent standing; true propositions do not automatically authorize the inference asserted between them (canon 239).",
+                "check": "RELATION_SUPPORTED",
+                "passed": true,
+                "rule": "RELATION_STANDING",
+                "unsupported": []
+              },
+              {
+                "basis": "A claim may exercise only the operation-specific force that its source, conditions, and warrant establish (canon 225). Access, confidence, and repetition do not supply decision-bearing standing (canon 475).",
+                "check": "STANDING_SUFFICIENT",
+                "passed": false,
+                "requested_force": 2,
+                "rule": "STANDING",
+                "source_grade": 0
+              },
+              {
+                "basis": "Every material transition must be expressly permitted by a governing rule or supported by an inspectable warrant adequate to the transition (canon 295-296).",
+                "check": "WARRANT_ADEQUATE",
+                "passed": true,
+                "rule": "WARRANT",
+                "warrant": null
+              },
+              {
+                "basis": "An unresolved element retains the standing of unknown; no conclusion may borrow premise-standing from it (canon 391, 405).",
+                "blocking": [],
+                "check": "UNKNOWN_LAWFUL",
+                "declared_unknowns": [],
+                "passed": false,
+                "rule": "UNKNOWN_STANDING"
+              },
+              {
+                "basis": "Scope, temporal validity, and jurisdiction are conditions of a claim's standing (canon 321).",
+                "check": "JURISDICTION_HOLDS",
+                "mismatched": [],
+                "passed": true,
+                "rule": "SCOPE_TIME_JURISDICTION"
+              },
+              {
+                "basis": "A record that was accurate in its time is not for that reason current (canon 897-899).",
+                "check": "TIME_CURRENT",
+                "conflicts": [],
+                "passed": true,
+                "rule": "TEMPORAL_STANDING"
+              }
+            ],
+            "rule": "TEST_OF_PASSAGE"
+          },
+          "permitted_operations": [
+            "DESCRIBE"
+          ],
+          "relation_claims": [],
+          "requested_operation": "INFORM",
+          "smallest_true_move": {
+            "operation": "DESCRIBE",
+            "requirement_for_next_move": "a retrievable source for the proposition: Supply a signed source attestation, the source content, or a resolvable source reference."
+          },
+          "standing_records": [
+            {
+              "content": "X",
+              "element": "proposition",
+              "epistemic_status": "unknown",
+              "institutional_standing": null,
+              "jurisdiction": null,
+              "operation_specific_capability": null,
+              "provenance": null,
+              "qualifiers": [],
+              "rule": "STANDING_RECORD_FORM",
+              "source_grade": 0,
+              "temporal_validity": null,
+              "version_correction_state": "initial",
+              "warrant": null
+            }
+          ],
+          "trace": [
+            "INVOCATION",
+            "INHERITANCE_RULE",
+            "INVENTORY",
+            "CONFLICT_AS_MISSING_OBJECT",
+            "TEST_OF_PASSAGE",
+            "SMALLEST_TRUE_MOVE",
+            "EMISSION_CONTROLS"
+          ],
+          "transition_audit": {
+            "authority": null,
+            "governing_rules": [
+              {
+                "check": "OBJECT_PRESERVED",
+                "passed": true,
+                "rule": "OBJECT_PRESERVATION"
+              },
+              {
+                "check": "CONDITIONS_TRAVEL",
+                "passed": true,
+                "rule": "CONDITIONS_TRAVEL"
+              },
+              {
+                "check": "RELATION_SUPPORTED",
+                "passed": true,
+                "rule": "RELATION_STANDING"
+              },
+              {
+                "check": "STANDING_SUFFICIENT",
+                "passed": false,
+                "rule": "STANDING"
+              },
+              {
+                "check": "WARRANT_ADEQUATE",
+                "passed": true,
+                "rule": "WARRANT"
+              },
+              {
+                "check": "UNKNOWN_LAWFUL",
+                "passed": false,
+                "rule": "UNKNOWN_STANDING"
+              },
+              {
+                "check": "JURISDICTION_HOLDS",
+                "passed": true,
+                "rule": "SCOPE_TIME_JURISDICTION"
+              },
+              {
+                "check": "TIME_CURRENT",
+                "passed": true,
+                "rule": "TEMPORAL_STANDING"
+              }
+            ],
+            "material_delta": "no transition; the deficit is named",
+            "maximum_permitted_result": [
+              "DESCRIBE"
+            ],
+            "prior_state": {
+              "continuity": "NO_PRIOR_EXAMINATION_ASSERTED",
+              "proposition_standing": "unknown",
+              "source_grade": 0
+            },
+            "proposed_state": "the object is preserved at its earned standing; INFORM is not exercised",
+            "requested_operation": "INFORM"
+          }
+        },
+        "effective_at": 1762819200,
+        "evaluated_at": 1762819200,
+        "expires_at": 1762905600,
+        "governing_method": {
+          "determination_source": "deterministic Decision Integrity engine (packages/decision-integrity)",
+          "id": "WHP-DECISION-INTEGRITY-V7-CONTINUOUS-WORK",
+          "note": "The engine's determination sets outcome and permitted_operations on this record (owner order 2026-11-10). The eight structural checks are retained below as legacy structural information. Since 2026-11-11 no language model is invoked on the evaluation path (owner directive 2026-11-11).",
+          "profile_id": "WHP-DECISION-INTEGRITY-V7-CONTINUOUS-WORK",
+          "sha256": "bd85f51f05afc6f77053aec086a1d013a1cccde70c30231622f0ecc7e3f25c21",
+          "version": "7.0.0"
+        },
+        "legacy_determination": {
+          "method": "eight code-derived structural checks (superseded 2026-11-10, owner order)",
+          "outcome": "NOT_ESTABLISHED",
+          "permitted_operations": [],
+          "unknowns": [
+            {
+              "source_hash": "307a9281ff797570b37085a3a31d3c7a1a56f55efc72ca1b8d4208407fd86e42",
+              "unknowns": [
+                {
+                  "blocks": [
+                    "INFORM",
+                    "RECOMMEND",
+                    "EXECUTE"
+                  ],
+                  "description": "Client data inserted through /v1/evaluate did not provide a retrievable provenance.source.",
+                  "id": "missing-source"
+                }
+              ]
+            }
+          ]
+        },
+        "not_assessed": [
+          "Empirical reality outside the submitted client data and inspectable record",
+          "Authenticity of an external locator beyond the supplied provenance and admitted attestation",
+          "Completeness of undisclosed external documents not present in the submitted packet",
+          "External legal, scientific, or moral authority not established in the submitted record",
+          "Universal efficacy or downstream outcomes beyond what the record and application establish"
+        ],
+        "object": {
+          "id": "eval-baed1632ff04dc7e",
+          "root": "307a9281ff797570b37085a3a31d3c7a1a56f55efc72ca1b8d4208407fd86e42",
+          "version": "1"
+        },
+        "outcome": "NOT_ESTABLISHED",
+        "permitted_operations": [
+          "DESCRIBE"
+        ],
+        "profile": {
+          "id": "WHP-DECISION-INTEGRITY-V7-CONTINUOUS-WORK",
+          "sha256": "bd85f51f05afc6f77053aec086a1d013a1cccde70c30231622f0ecc7e3f25c21",
+          "version": "7.0.0"
+        },
+        "requested_operation": "INFORM",
+        "review_triggers": [
+          "Assessed object or version changes",
+          "Source or authority withdrawal, correction, dispute or expiry",
+          "Profile or governing conditions change"
+        ],
+        "submission_hash": "0f1fc9ec2d3c93a49c2536fff25f3ee2c978bc67348f40cb5adb005ebe3cd7a0"
+      },
+      "decision_record_ref": "urn:sha256:8515f2c2c18430670842310f80531003fb834b9f623cc5580737c3519bdb4f4c",
+      "door": "/v1/evaluate",
+      "effective_at": 1762819200,
+      "environment": "TEST",
+      "examination_provenance": {
+        "examined_at": 1762819200,
+        "governing_text_sha256": "bd85f51f05afc6f77053aec086a1d013a1cccde70c30231622f0ecc7e3f25c21",
+        "governing_text_title": "Decision Integrity: The Continuous Work",
+        "governing_text_version": "7.0.0",
+        "model_id": "whp-decision-integrity-v7-deterministic-floor",
+        "model_provider": "wheeler-hubbell-publishing-sovereign",
+        "model_version": "7.0.0",
+        "protocol_profile_id": "WHP-DECISION-INTEGRITY-V7-CONTINUOUS-WORK",
+        "protocol_sha256": "bd85f51f05afc6f77053aec086a1d013a1cccde70c30231622f0ecc7e3f25c21",
+        "reproducibility_class": "DETERMINISTIC_RULE_EVALUATION",
+        "reproducibility_note": "This examination is the manuscript (Decision Integrity: The Continuous Work, v7) encoded in deterministic code, applied to the bound material. No language model was invoked and no submitted data left the service. The examination is repeatable under the stated code and canon hashes.",
+        "system_prompt_sha256": "7c0eaef62f895108b1e3b0878886b4fa28ad438e4a0a7d851f2df18a846adf82",
+        "temperature": 0
+      },
+      "expires_at": 1762905600,
+      "finding_disposition": "NEGATIVE_STANDING_FINDING",
+      "finding_id": "WHP-NF-6579a82066c7a4cbf7437d16244ea9b4a89f50896a1c350c9de3a80d97cc77c6",
+      "integration_rule": "A positive Standing Mark is a signed, scope-bound examination result. It may satisfy an evidence requirement defined by a receiving system, but it does not itself authorize an action. The receiving system must independently evaluate the applicable authority, conditions, and action policy. Absence of a positive Mark means the Mark requirement has not been satisfied; it does not, by itself, establish that the underlying action is prohibited.",
+      "issued_at": 1762819200,
+      "issuer": "Wheeler Hubbell Publishing",
+      "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+      "limitations": [
+        "Empirical reality outside the submitted client data and inspectable record",
+        "Authenticity of an external locator beyond the supplied provenance and admitted attestation",
+        "Completeness of undisclosed external documents not present in the submitted packet",
+        "External legal, scientific, or moral authority not established in the submitted record",
+        "Universal efficacy or downstream outcomes beyond what the record and application establish"
+      ],
+      "mark_id": "WHP-SM-6579a82066c7a4cbf7437d16244ea9b4a89f50896a1c350c9de3a80d97cc77c6",
+      "object": {
+        "id": "eval-baed1632ff04dc7e",
+        "root": "307a9281ff797570b37085a3a31d3c7a1a56f55efc72ca1b8d4208407fd86e42",
+        "version": "1"
+      },
+      "object_binding": {
+        "examination_scope": "wheeler-hubbell-publishing:whp-sovereign-standing",
+        "examined_material": {
+          "bytes": 1,
+          "fallback": true,
+          "field": "claim",
+          "sha256": "4b68ab3847feda7d6c62c1fbcbeebfa35eab7351ed5e78f4ddadea5df64b8015"
+        },
+        "examined_question": "X",
+        "finding_disposition": "NEGATIVE_STANDING_FINDING",
+        "governing_canon_sha256": "bd85f51f05afc6f77053aec086a1d013a1cccde70c30231622f0ecc7e3f25c21",
+        "governing_canon_version": "7.0.0",
+        "outcome": "NOT_ESTABLISHED",
+        "requested_operation": "INFORM",
+        "submitted_bytes_sha256": "f8ca7bdd1542fe4f7bb64eb878937f3be04242f89c55d185a84026e45c98e30d"
+      },
+      "profile": {
+        "id": "WHP-DECISION-INTEGRITY-V7-CONTINUOUS-WORK",
+        "sha256": "bd85f51f05afc6f77053aec086a1d013a1cccde70c30231622f0ecc7e3f25c21",
+        "version": "7.0.0"
+      },
+      "purchase_id": "6579a82066c7a4cbf7437d16244ea9b4a89f50896a1c350c9de3a80d97cc77c6",
+      "service_name": "WHP Standing Mark Service",
+      "standing": {
+        "bounds": {
+          "jurisdiction": "wheeler-hubbell-publishing",
+          "scope": "whp-sovereign-standing",
+          "valid_from": 1762819140,
+          "valid_until": 1762905600
+        },
+        "components": {
+          "ACTION_BOUNDARY": "NOT_ASSESSED",
+          "CONTEXT": "ESTABLISHED",
+          "CONTINUITY": "NOT_ASSESSED",
+          "PASSAGE": "NOT_ESTABLISHED",
+          "RELATION": "NOT_ASSESSED",
+          "SOURCE": "NOT_ESTABLISHED",
+          "UNKNOWN": "ESTABLISHED"
+        },
+        "finding_disposition": "NEGATIVE_STANDING_FINDING",
+        "operation": {
+          "operation": "DESCRIBE",
+          "requirement_for_next_move": "a retrievable source for the proposition: Supply a signed source attestation, the source content, or a resolvable source reference."
+        },
+        "outcome": "NOT_ESTABLISHED",
+        "permitted_operations": [
+          "DESCRIBE"
+        ]
+      },
+      "submission": {
+        "bounds": {
+          "jurisdiction": "wheeler-hubbell-publishing",
+          "scope": "whp-sovereign-standing",
+          "valid_from": 1762819140,
+          "valid_until": 1762905600
+        },
+        "client_reference": "single-door-eval-baed1632ff04dc7e",
+        "nodes": [
+          {
+            "payload": {
+              "active": true,
+              "content": {
+                "kind": "PASSAGE",
+                "text": "X"
+              },
+              "epistemic_status": "UNKNOWN",
+              "id": "eval-baed1632ff04dc7e",
+              "jurisdiction": "wheeler-hubbell-publishing",
+              "locator": "urn:source:unverified",
+              "operations": [],
+              "prior_hash": null,
+              "qualifiers": [
+                "Single-door evaluation (/v1/evaluate) under Decision Integrity v7 for subject: X"
+              ],
+              "summary": "X",
+              "unknowns": [
+                {
+                  "blocks": [
+                    "INFORM",
+                    "RECOMMEND",
+                    "EXECUTE"
+                  ],
+                  "description": "Client data inserted through /v1/evaluate did not provide a retrievable provenance.source.",
+                  "id": "missing-source"
+                }
+              ],
+              "valid_from": 1762819140,
+              "valid_until": 1762905600,
+              "version_state": "CURRENT"
+            },
+            "protected": {
+              "algorithm": "Ed25519",
+              "canonicalization": "WHP-JCS-I1",
+              "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+              "type": "WHP-UNATTESTED-CANDIDATE-v1"
+            },
+            "signature": ""
+          }
+        ],
+        "object": {
+          "id": "eval-baed1632ff04dc7e",
+          "root": "307a9281ff797570b37085a3a31d3c7a1a56f55efc72ca1b8d4208407fd86e42",
+          "version": "1"
+        },
+        "profile": {
+          "id": "WHP-DECISION-INTEGRITY-V7-CONTINUOUS-WORK",
+          "sha256": "bd85f51f05afc6f77053aec086a1d013a1cccde70c30231622f0ecc7e3f25c21",
+          "version": "7.0.0"
+        },
+        "requested_operation": "INFORM",
+        "transitions": [],
+        "version": "WHP-STANDING-SUBMISSION-v1"
+      },
+      "submission_hash": "0f1fc9ec2d3c93a49c2536fff25f3ee2c978bc67348f40cb5adb005ebe3cd7a0",
+      "version": "WHP-STANDING-RESULT-v1"
+    },
+    "protected": {
+      "algorithm": "Ed25519",
+      "canonicalization": "WHP-JCS-I1",
+      "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+      "type": "WHP-STANDING-MARK-v1"
+    },
+    "signature": "BZVXHh/zMaGCWm79naqDGQi/FTwwmrRmpLBhiNQZQj92X12UcWsUZBndQh1CjYwpfDtgJEX70bdeVejx/gOKCA=="
+  },
+  "public_key": "MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo="
+}

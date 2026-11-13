@@ -1,0 +1,12 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
+  "name": "io.github.wheelerhubbell/standing-mark",
+  "description": "Independent examination of agent claims and proposed actions. Signed, verifiable results from Wheeler Hubbell Publishing's Standing Mark service.",
+  "version": "1.0.0",
+  "packages": [{
+    "registryType": "pypi",
+    "identifier": "standing-mark-mcp",
+    "version": "1.0.0",
+    "transport": {"type": "stdio"}
+  }]
+}
