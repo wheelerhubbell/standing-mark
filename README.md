@@ -29,6 +29,8 @@ This repository holds the public developer assets for the service:
 | A2A agent card | `a2a/agent-card.json` |
 | Reproducible demonstration | `demo/standing_mark_demo.py` |
 | Submission rejection boundary | `docs/rejection-boundary.md` |
+| Standing Receiving Kit 0.1.1 (receiver, receipt record, exchange protocol, adapters) | `receiver/` |
+| Universal Intake reference implementation, Python and PHP (not used by the live service) | `intake/` |
 
 Payment buys an examination, not a positive finding. Results are signed (type `WHP-STANDING-MARK-v1`, Ed25519, canonicalization `WHP-JCS-I1`) and anyone can verify a signature against the published issuer key. Signature verification establishes cryptographic validity, not the substantive correctness of a claim.
 

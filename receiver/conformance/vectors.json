@@ -1,0 +1,1464 @@
+{
+ "binding": [
+  {
+   "expected": "CORRESPONDS",
+   "id": "canonical_and_pretty_same_payload",
+   "mark": {
+    "payload": {
+     "environment": "TEST",
+     "expires_at": 1100,
+     "finding_disposition": "POSITIVE_STANDING_FINDING",
+     "integration_rule": "Synthetic test fixture. Not an issuer statement.",
+     "issued_at": 1000,
+     "issuer": "Wheeler Hubbell Publishing",
+     "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "mark_id": "WHP-SM-TEST-0001",
+     "object_binding": {
+      "examined_material": {
+       "bytes": 58,
+       "fallback": false,
+       "field": "data",
+       "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "examined_question": "The published contract names Base mainnet USDC as the payment asset.",
+      "requested_operation": "INFORM",
+      "submitted_bytes_sha256": "517da7e3b3c1fcbc061d0779bfd08a634ad75f47c03421016e950622aedab40b"
+     },
+     "standing": {
+      "bounds": {
+       "jurisdiction": "wheeler-hubbell-publishing",
+       "scope": "whp-sovereign-standing"
+      },
+      "components": {
+       "SOURCE": "ESTABLISHED"
+      },
+      "outcome": "TRANSITION_ALLOWED",
+      "permitted_operations": [
+       "DESCRIBE",
+       "INFORM"
+      ]
+     },
+     "submission_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "protected": {
+     "algorithm": "Ed25519",
+     "canonicalization": "WHP-JCS-I1",
+     "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "type": "WHP-STANDING-MARK-v1"
+    },
+    "signature": "+Z5gFbHpU/CuFOWVVs6Mc4diUK0tfAGXLh6m6BrzsF5JwKZuRxBU5Md/s8Ixhew22YhDSNXg58dY0lkHr/KHDA=="
+   },
+   "pinned": "MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo=",
+   "request": "{\n   \"claim\": \"The published contract names Base mainnet USDC as the payment asset.\",\n   \"data\": \"The payment asset is USDC.\\nThe price is exactly 1.00 USDC.\",\n   \"requested_operation\": \"INFORM\"\n}"
+  },
+  {
+   "expected": "DOES_NOT_CORRESPOND",
+   "id": "different_payload",
+   "mark": {
+    "payload": {
+     "environment": "TEST",
+     "expires_at": 1100,
+     "finding_disposition": "POSITIVE_STANDING_FINDING",
+     "integration_rule": "Synthetic test fixture. Not an issuer statement.",
+     "issued_at": 1000,
+     "issuer": "Wheeler Hubbell Publishing",
+     "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "mark_id": "WHP-SM-TEST-0001",
+     "object_binding": {
+      "examined_material": {
+       "bytes": 58,
+       "fallback": false,
+       "field": "data",
+       "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "examined_question": "The published contract names Base mainnet USDC as the payment asset.",
+      "requested_operation": "INFORM",
+      "submitted_bytes_sha256": "517da7e3b3c1fcbc061d0779bfd08a634ad75f47c03421016e950622aedab40b"
+     },
+     "standing": {
+      "bounds": {
+       "jurisdiction": "wheeler-hubbell-publishing",
+       "scope": "whp-sovereign-standing"
+      },
+      "components": {
+       "SOURCE": "ESTABLISHED"
+      },
+      "outcome": "TRANSITION_ALLOWED",
+      "permitted_operations": [
+       "DESCRIBE",
+       "INFORM"
+      ]
+     },
+     "submission_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "protected": {
+     "algorithm": "Ed25519",
+     "canonicalization": "WHP-JCS-I1",
+     "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "type": "WHP-STANDING-MARK-v1"
+    },
+    "signature": "+Z5gFbHpU/CuFOWVVs6Mc4diUK0tfAGXLh6m6BrzsF5JwKZuRxBU5Md/s8Ixhew22YhDSNXg58dY0lkHr/KHDA=="
+   },
+   "pinned": "MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo=",
+   "request": "{\"claim\":\"other\",\"data\":\"x\"}"
+  },
+  {
+   "expected": "CORRESPONDS",
+   "id": "bare_string_hashed_without_quotes",
+   "mark": {
+    "payload": {
+     "environment": "TEST",
+     "expires_at": 87400,
+     "finding_disposition": "POSITIVE_STANDING_FINDING",
+     "integration_rule": "Synthetic test fixture. Not an issuer statement.",
+     "issued_at": 1000,
+     "issuer": "Wheeler Hubbell Publishing",
+     "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "mark_id": "WHP-SM-TEST-0001",
+     "object_binding": {
+      "examined_material": {
+       "bytes": 4,
+       "fallback": false,
+       "field": "data",
+       "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "examined_question": "bare",
+      "requested_operation": "INFORM",
+      "submitted_bytes_sha256": "9b828d53402d6e332ef05a2fe03063b359192571ba99fcd3b85074f46a72fd7e"
+     },
+     "standing": {
+      "bounds": {
+       "jurisdiction": "wheeler-hubbell-publishing",
+       "scope": "whp-sovereign-standing"
+      },
+      "components": {
+       "SOURCE": "ESTABLISHED"
+      },
+      "outcome": "TRANSITION_ALLOWED",
+      "permitted_operations": [
+       "DESCRIBE",
+       "INFORM"
+      ]
+     },
+     "submission_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "protected": {
+     "algorithm": "Ed25519",
+     "canonicalization": "WHP-JCS-I1",
+     "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "type": "WHP-STANDING-MARK-v1"
+    },
+    "signature": "rwXRHXHu1yJZYeRUAprXg7v/q1dsQGbP852cDBftJO/9etZgmLrgJZcHhkYo9gUeboKM3J4OhcXSIHEZCWhRCg=="
+   },
+   "pinned": "MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo=",
+   "request": "\"bare\""
+  }
+ ],
+ "chain": [
+  {
+   "expected": [],
+   "id": "valid",
+   "records": [
+    {
+     "kind": "request",
+     "object": {
+      "claim": "The published contract names Base mainnet USDC as the payment asset.",
+      "data": "The payment asset is USDC.\nThe price is exactly 1.00 USDC.",
+      "requested_operation": "INFORM"
+     },
+     "object_id": "sha256:517da7e3b3c1fcbc061d0779bfd08a634ad75f47c03421016e950622aedab40b",
+     "prior_ids": []
+    },
+    {
+     "kind": "mark",
+     "object": {
+      "payload": {
+       "environment": "TEST",
+       "expires_at": 1100,
+       "finding_disposition": "POSITIVE_STANDING_FINDING",
+       "integration_rule": "Synthetic test fixture. Not an issuer statement.",
+       "issued_at": 1000,
+       "issuer": "Wheeler Hubbell Publishing",
+       "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+       "mark_id": "WHP-SM-TEST-0001",
+       "object_binding": {
+        "examined_material": {
+         "bytes": 313,
+         "fallback": false,
+         "field": "data",
+         "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "examined_question": "The published contract names Base mainnet USDC as the payment asset.",
+        "requested_operation": "INFORM",
+        "submitted_bytes_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+       },
+       "standing": {
+        "bounds": {
+         "jurisdiction": "wheeler-hubbell-publishing",
+         "scope": "whp-sovereign-standing"
+        },
+        "components": {
+         "SOURCE": "ESTABLISHED"
+        },
+        "outcome": "TRANSITION_ALLOWED",
+        "permitted_operations": [
+         "DESCRIBE",
+         "INFORM"
+        ]
+       },
+       "submission_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "protected": {
+       "algorithm": "Ed25519",
+       "canonicalization": "WHP-JCS-I1",
+       "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+       "type": "WHP-STANDING-MARK-v1"
+      },
+      "signature": "EhpHupjaNpaMziSEp7l/XLtDjgn/sGAzQAM5vnj3+m52koyH1D1e+V53Iu3BZv/5MVCme+ReX2DahQIP1rs2Bg=="
+     },
+     "object_id": "sha256:91587263fe114ddebe4707b817c2f434afd88ae15be55829745edda606264456",
+     "prior_ids": [
+      "sha256:517da7e3b3c1fcbc061d0779bfd08a634ad75f47c03421016e950622aedab40b"
+     ]
+    },
+    {
+     "kind": "reception_event",
+     "object": {
+      "event_id": "b0fd076f4891e726924b60963a1a6fd184fcf2a1bf16da9362cf96205d725c7f",
+      "event_type": "STANDING_MARK_RECEPTION",
+      "mark_id": "WHP-SM-TEST-0001",
+      "original_sha256": "b5f766ccd4c54b7551c61af12f139be55fbc7268e10fa3ef56c4a8eb71255566",
+      "received_at": 1050,
+      "recipient": "conformance-recipient",
+      "state": "RECEIVED_VERIFIED"
+     },
+     "object_id": "sha256:f28ead36b4225aa37047fadaa503569db8df3538e3387e1e9fe0e877c7a38095",
+     "prior_ids": [
+      "sha256:91587263fe114ddebe4707b817c2f434afd88ae15be55829745edda606264456"
+     ]
+    },
+    {
+     "kind": "receipt",
+     "object": {
+      "correspondence": {
+       "issued_object_check": "NOT_CHECKED",
+       "received_object_sha256": "91587263fe114ddebe4707b817c2f434afd88ae15be55829745edda606264456"
+      },
+      "does_not_establish": [
+       "RECEIVER_UNDERSTANDING",
+       "RECEIVER_AGREEMENT",
+       "RECEIVER_ACCEPTANCE",
+       "AUTHORIZATION_OF_ANY_ACTION",
+       "SUBSTANTIVE_CORRECTNESS_OF_THE_EXAMINATION"
+      ],
+      "establishes": [
+       "AUTHENTICATED_RECEPTION_EVENT",
+       "CORRESPONDENCE_OF_RECEIVED_TO_ISSUED_OBJECT"
+      ],
+      "issuing_authority": "Wheeler Hubbell Publishing",
+      "mark_ref": {
+       "envelope_sha256": "91587263fe114ddebe4707b817c2f434afd88ae15be55829745edda606264456",
+       "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+       "mark_id": "WHP-SM-TEST-0001"
+      },
+      "reception_event": {
+       "event_id": "b0fd076f4891e726924b60963a1a6fd184fcf2a1bf16da9362cf96205d725c7f",
+       "received_at": 1050,
+       "state": "RECEIVED_VERIFIED"
+      },
+      "recipient": {
+       "authenticated_by": null,
+       "label": "conformance-recipient"
+      },
+      "type": "WHP-STANDING-RECEIPT-v1",
+      "verification_evidence": {
+       "checks": {
+        "COMPLETE": "PASS",
+        "CORRESPONDS_TO_ISSUED": "NOT_CHECKED",
+        "FRESH": "PASS",
+        "ISSUER_PINNED": "PASS",
+        "REPLAY": "FIRST_RECEIPT",
+        "SIGNATURE": "PASS"
+       },
+       "kit": "standing-receiver/0.1.0",
+       "problems": []
+      }
+     },
+     "object_id": "sha256:1ca145ab50fd074a47db22b2d708044e24c678c3a2cc94ff33b9984ee30f861a",
+     "prior_ids": [
+      "sha256:f28ead36b4225aa37047fadaa503569db8df3538e3387e1e9fe0e877c7a38095"
+     ]
+    }
+   ]
+  },
+  {
+   "expected": [
+    "1:OBJECT_ALTERED"
+   ],
+   "id": "altered",
+   "records": [
+    {
+     "kind": "request",
+     "object": {
+      "claim": "The published contract names Base mainnet USDC as the payment asset.",
+      "data": "The payment asset is USDC.\nThe price is exactly 1.00 USDC.",
+      "requested_operation": "INFORM"
+     },
+     "object_id": "sha256:517da7e3b3c1fcbc061d0779bfd08a634ad75f47c03421016e950622aedab40b",
+     "prior_ids": []
+    },
+    {
+     "kind": "mark",
+     "object": {
+      "payload": {
+       "environment": "TEST",
+       "expires_at": 1100,
+       "finding_disposition": "POSITIVE_STANDING_FINDING",
+       "integration_rule": "Synthetic test fixture. Not an issuer statement.",
+       "issued_at": 1,
+       "issuer": "Wheeler Hubbell Publishing",
+       "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+       "mark_id": "WHP-SM-TEST-0001",
+       "object_binding": {
+        "examined_material": {
+         "bytes": 313,
+         "fallback": false,
+         "field": "data",
+         "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "examined_question": "The published contract names Base mainnet USDC as the payment asset.",
+        "requested_operation": "INFORM",
+        "submitted_bytes_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+       },
+       "standing": {
+        "bounds": {
+         "jurisdiction": "wheeler-hubbell-publishing",
+         "scope": "whp-sovereign-standing"
+        },
+        "components": {
+         "SOURCE": "ESTABLISHED"
+        },
+        "outcome": "TRANSITION_ALLOWED",
+        "permitted_operations": [
+         "DESCRIBE",
+         "INFORM"
+        ]
+       },
+       "submission_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "protected": {
+       "algorithm": "Ed25519",
+       "canonicalization": "WHP-JCS-I1",
+       "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+       "type": "WHP-STANDING-MARK-v1"
+      },
+      "signature": "EhpHupjaNpaMziSEp7l/XLtDjgn/sGAzQAM5vnj3+m52koyH1D1e+V53Iu3BZv/5MVCme+ReX2DahQIP1rs2Bg=="
+     },
+     "object_id": "sha256:91587263fe114ddebe4707b817c2f434afd88ae15be55829745edda606264456",
+     "prior_ids": [
+      "sha256:517da7e3b3c1fcbc061d0779bfd08a634ad75f47c03421016e950622aedab40b"
+     ]
+    },
+    {
+     "kind": "reception_event",
+     "object": {
+      "event_id": "b0fd076f4891e726924b60963a1a6fd184fcf2a1bf16da9362cf96205d725c7f",
+      "event_type": "STANDING_MARK_RECEPTION",
+      "mark_id": "WHP-SM-TEST-0001",
+      "original_sha256": "b5f766ccd4c54b7551c61af12f139be55fbc7268e10fa3ef56c4a8eb71255566",
+      "received_at": 1050,
+      "recipient": "conformance-recipient",
+      "state": "RECEIVED_VERIFIED"
+     },
+     "object_id": "sha256:f28ead36b4225aa37047fadaa503569db8df3538e3387e1e9fe0e877c7a38095",
+     "prior_ids": [
+      "sha256:91587263fe114ddebe4707b817c2f434afd88ae15be55829745edda606264456"
+     ]
+    },
+    {
+     "kind": "receipt",
+     "object": {
+      "correspondence": {
+       "issued_object_check": "NOT_CHECKED",
+       "received_object_sha256": "91587263fe114ddebe4707b817c2f434afd88ae15be55829745edda606264456"
+      },
+      "does_not_establish": [
+       "RECEIVER_UNDERSTANDING",
+       "RECEIVER_AGREEMENT",
+       "RECEIVER_ACCEPTANCE",
+       "AUTHORIZATION_OF_ANY_ACTION",
+       "SUBSTANTIVE_CORRECTNESS_OF_THE_EXAMINATION"
+      ],
+      "establishes": [
+       "AUTHENTICATED_RECEPTION_EVENT",
+       "CORRESPONDENCE_OF_RECEIVED_TO_ISSUED_OBJECT"
+      ],
+      "issuing_authority": "Wheeler Hubbell Publishing",
+      "mark_ref": {
+       "envelope_sha256": "91587263fe114ddebe4707b817c2f434afd88ae15be55829745edda606264456",
+       "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+       "mark_id": "WHP-SM-TEST-0001"
+      },
+      "reception_event": {
+       "event_id": "b0fd076f4891e726924b60963a1a6fd184fcf2a1bf16da9362cf96205d725c7f",
+       "received_at": 1050,
+       "state": "RECEIVED_VERIFIED"
+      },
+      "recipient": {
+       "authenticated_by": null,
+       "label": "conformance-recipient"
+      },
+      "type": "WHP-STANDING-RECEIPT-v1",
+      "verification_evidence": {
+       "checks": {
+        "COMPLETE": "PASS",
+        "CORRESPONDS_TO_ISSUED": "NOT_CHECKED",
+        "FRESH": "PASS",
+        "ISSUER_PINNED": "PASS",
+        "REPLAY": "FIRST_RECEIPT",
+        "SIGNATURE": "PASS"
+       },
+       "kit": "standing-receiver/0.1.0",
+       "problems": []
+      }
+     },
+     "object_id": "sha256:1ca145ab50fd074a47db22b2d708044e24c678c3a2cc94ff33b9984ee30f861a",
+     "prior_ids": [
+      "sha256:f28ead36b4225aa37047fadaa503569db8df3538e3387e1e9fe0e877c7a38095"
+     ]
+    }
+   ]
+  },
+  {
+   "expected": [
+    "1:ILLEGAL_LINK request->receipt"
+   ],
+   "id": "illegal_link",
+   "records": [
+    {
+     "kind": "request",
+     "object": {
+      "claim": "The published contract names Base mainnet USDC as the payment asset.",
+      "data": "The payment asset is USDC.\nThe price is exactly 1.00 USDC.",
+      "requested_operation": "INFORM"
+     },
+     "object_id": "sha256:517da7e3b3c1fcbc061d0779bfd08a634ad75f47c03421016e950622aedab40b",
+     "prior_ids": []
+    },
+    {
+     "kind": "receipt",
+     "object": {
+      "correspondence": {
+       "issued_object_check": "NOT_CHECKED",
+       "received_object_sha256": "91587263fe114ddebe4707b817c2f434afd88ae15be55829745edda606264456"
+      },
+      "does_not_establish": [
+       "RECEIVER_UNDERSTANDING",
+       "RECEIVER_AGREEMENT",
+       "RECEIVER_ACCEPTANCE",
+       "AUTHORIZATION_OF_ANY_ACTION",
+       "SUBSTANTIVE_CORRECTNESS_OF_THE_EXAMINATION"
+      ],
+      "establishes": [
+       "AUTHENTICATED_RECEPTION_EVENT",
+       "CORRESPONDENCE_OF_RECEIVED_TO_ISSUED_OBJECT"
+      ],
+      "issuing_authority": "Wheeler Hubbell Publishing",
+      "mark_ref": {
+       "envelope_sha256": "91587263fe114ddebe4707b817c2f434afd88ae15be55829745edda606264456",
+       "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+       "mark_id": "WHP-SM-TEST-0001"
+      },
+      "reception_event": {
+       "event_id": "b0fd076f4891e726924b60963a1a6fd184fcf2a1bf16da9362cf96205d725c7f",
+       "received_at": 1050,
+       "state": "RECEIVED_VERIFIED"
+      },
+      "recipient": {
+       "authenticated_by": null,
+       "label": "conformance-recipient"
+      },
+      "type": "WHP-STANDING-RECEIPT-v1",
+      "verification_evidence": {
+       "checks": {
+        "COMPLETE": "PASS",
+        "CORRESPONDS_TO_ISSUED": "NOT_CHECKED",
+        "FRESH": "PASS",
+        "ISSUER_PINNED": "PASS",
+        "REPLAY": "FIRST_RECEIPT",
+        "SIGNATURE": "PASS"
+       },
+       "kit": "standing-receiver/0.1.0",
+       "problems": []
+      }
+     },
+     "object_id": "sha256:1ca145ab50fd074a47db22b2d708044e24c678c3a2cc94ff33b9984ee30f861a",
+     "prior_ids": [
+      "sha256:517da7e3b3c1fcbc061d0779bfd08a634ad75f47c03421016e950622aedab40b"
+     ]
+    }
+   ]
+  }
+ ],
+ "evidence": [
+  {
+   "envelope": {
+    "payload": {
+     "environment": "TEST",
+     "expires_at": 1100,
+     "finding_disposition": "POSITIVE_STANDING_FINDING",
+     "integration_rule": "Synthetic test fixture. Not an issuer statement.",
+     "issued_at": 1000,
+     "issuer": "Wheeler Hubbell Publishing",
+     "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "mark_id": "WHP-SM-TEST-0001",
+     "object_binding": {
+      "examined_material": {
+       "bytes": 313,
+       "fallback": false,
+       "field": "data",
+       "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "examined_question": "The published contract names Base mainnet USDC as the payment asset.",
+      "requested_operation": "INFORM",
+      "submitted_bytes_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+     },
+     "standing": {
+      "bounds": {
+       "jurisdiction": "wheeler-hubbell-publishing",
+       "scope": "whp-sovereign-standing"
+      },
+      "components": {
+       "SOURCE": "ESTABLISHED"
+      },
+      "outcome": "TRANSITION_ALLOWED",
+      "permitted_operations": [
+       "DESCRIBE",
+       "INFORM"
+      ]
+     },
+     "submission_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "protected": {
+     "algorithm": "Ed25519",
+     "canonicalization": "WHP-JCS-I1",
+     "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "type": "WHP-STANDING-MARK-v1"
+    },
+    "signature": "EhpHupjaNpaMziSEp7l/XLtDjgn/sGAzQAM5vnj3+m52koyH1D1e+V53Iu3BZv/5MVCme+ReX2DahQIP1rs2Bg=="
+   },
+   "expected": {
+    "freshness": "CURRENT",
+    "mark_verified": true,
+    "outcome": "TRANSITION_ALLOWED",
+    "problems": [],
+    "substantive": "SUBSTANTIVE"
+   },
+   "id": "allowed_finding_substantive",
+   "now": 1050,
+   "pinned": "MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo="
+  },
+  {
+   "envelope": {
+    "payload": {
+     "environment": "TEST",
+     "expires_at": 1100,
+     "finding_disposition": "NEGATIVE_STANDING_FINDING",
+     "integration_rule": "Synthetic test fixture. Not an issuer statement.",
+     "issued_at": 1000,
+     "issuer": "Wheeler Hubbell Publishing",
+     "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "mark_id": "WHP-SM-TEST-0001",
+     "object_binding": {
+      "examined_material": {
+       "bytes": 313,
+       "fallback": false,
+       "field": "data",
+       "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "examined_question": "The published contract names Base mainnet USDC as the payment asset.",
+      "requested_operation": "INFORM",
+      "submitted_bytes_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+     },
+     "standing": {
+      "bounds": {
+       "jurisdiction": "wheeler-hubbell-publishing",
+       "scope": "whp-sovereign-standing"
+      },
+      "components": {
+       "SOURCE": "NOT_ESTABLISHED"
+      },
+      "outcome": "NOT_ESTABLISHED",
+      "permitted_operations": [
+       "DESCRIBE"
+      ]
+     },
+     "submission_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "protected": {
+     "algorithm": "Ed25519",
+     "canonicalization": "WHP-JCS-I1",
+     "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "type": "WHP-STANDING-MARK-v1"
+    },
+    "signature": "Llqf1WfxI5zO/ZC9VNS/vUBlsZLLIcjBNAsWis8+wtHwRMFTkHPoDr3Me5Axr4bUfmyzAKFYP6DnI4IKEirxDg=="
+   },
+   "expected": {
+    "freshness": "CURRENT",
+    "mark_verified": true,
+    "outcome": "NOT_ESTABLISHED",
+    "problems": [],
+    "substantive": "SUBSTANTIVE"
+   },
+   "id": "not_established_substantive",
+   "now": 1050,
+   "pinned": "MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo="
+  },
+  {
+   "envelope": {
+    "payload": {
+     "environment": "TEST",
+     "expires_at": 1100,
+     "finding_disposition": "NEGATIVE_STANDING_FINDING",
+     "integration_rule": "Synthetic test fixture. Not an issuer statement.",
+     "issued_at": 1000,
+     "issuer": "Wheeler Hubbell Publishing",
+     "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "mark_id": "WHP-SM-TEST-0001",
+     "object_binding": {
+      "examined_material": {
+       "bytes": 0,
+       "fallback": false,
+       "field": "data",
+       "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "examined_question": "The published contract names Base mainnet USDC as the payment asset.",
+      "requested_operation": "INFORM",
+      "submitted_bytes_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+     },
+     "standing": {
+      "bounds": {
+       "jurisdiction": "wheeler-hubbell-publishing",
+       "scope": "whp-sovereign-standing"
+      },
+      "components": {
+       "SOURCE": "NOT_ESTABLISHED"
+      },
+      "outcome": "NOT_ESTABLISHED",
+      "permitted_operations": [
+       "DESCRIBE"
+      ]
+     },
+     "submission_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "protected": {
+     "algorithm": "Ed25519",
+     "canonicalization": "WHP-JCS-I1",
+     "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "type": "WHP-STANDING-MARK-v1"
+    },
+    "signature": "rc4qkXJn9KLNKfBmDyuJ5jdtU2NGSAcyUFOMqfvouEXELYb0rW7WNAOBj1WOWn7zlGBLZXZLbynMuCqjBbDKBg=="
+   },
+   "expected": {
+    "freshness": "CURRENT",
+    "mark_verified": true,
+    "outcome": "NOT_ESTABLISHED",
+    "problems": [
+     "EXAMINATION_NOT_SUBSTANTIVE"
+    ],
+    "substantive": "NOT_SUBSTANTIVE"
+   },
+   "id": "zero_bytes",
+   "now": 1050,
+   "pinned": "MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo="
+  },
+  {
+   "envelope": {
+    "payload": {
+     "environment": "TEST",
+     "expires_at": 1100,
+     "finding_disposition": "POSITIVE_STANDING_FINDING",
+     "integration_rule": "Synthetic test fixture. Not an issuer statement.",
+     "issued_at": 1000,
+     "issuer": "Wheeler Hubbell Publishing",
+     "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "mark_id": "WHP-SM-TEST-0001",
+     "object_binding": {
+      "examined_material": {
+       "bytes": 313,
+       "fallback": false,
+       "field": "data",
+       "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "examined_question": "The published contract names Base mainnet USDC as the payment asset.",
+      "requested_operation": "INFORM",
+      "submitted_bytes_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+     },
+     "standing": {
+      "bounds": {
+       "jurisdiction": "wheeler-hubbell-publishing",
+       "scope": "whp-sovereign-standing"
+      },
+      "components": {
+       "SOURCE": "ESTABLISHED"
+      },
+      "outcome": "TRANSITION_ALLOWED",
+      "permitted_operations": [
+       "DESCRIBE",
+       "INFORM"
+      ]
+     },
+     "submission_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "protected": {
+     "algorithm": "Ed25519",
+     "canonicalization": "WHP-JCS-I1",
+     "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "type": "WHP-STANDING-MARK-v1"
+    },
+    "signature": "EhpHupjaNpaMziSEp7l/XLtDjgn/sGAzQAM5vnj3+m52koyH1D1e+V53Iu3BZv/5MVCme+ReX2DahQIP1rs2Bg=="
+   },
+   "expected": {
+    "freshness": "EXPIRED",
+    "mark_verified": true,
+    "outcome": "TRANSITION_ALLOWED",
+    "problems": [
+     "EXPIRED"
+    ],
+    "substantive": "SUBSTANTIVE"
+   },
+   "id": "expired",
+   "now": 1100,
+   "pinned": "MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo="
+  },
+  {
+   "envelope": {
+    "payload": {
+     "environment": "TEST",
+     "expires_at": 1100,
+     "finding_disposition": "POSITIVE_STANDING_FINDING",
+     "integration_rule": "Synthetic test fixture. Not an issuer statement.",
+     "issued_at": 1001,
+     "issuer": "Wheeler Hubbell Publishing",
+     "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "mark_id": "WHP-SM-TEST-0001",
+     "object_binding": {
+      "examined_material": {
+       "bytes": 313,
+       "fallback": false,
+       "field": "data",
+       "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "examined_question": "The published contract names Base mainnet USDC as the payment asset.",
+      "requested_operation": "INFORM",
+      "submitted_bytes_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+     },
+     "standing": {
+      "bounds": {
+       "jurisdiction": "wheeler-hubbell-publishing",
+       "scope": "whp-sovereign-standing"
+      },
+      "components": {
+       "SOURCE": "ESTABLISHED"
+      },
+      "outcome": "TRANSITION_ALLOWED",
+      "permitted_operations": [
+       "DESCRIBE",
+       "INFORM"
+      ]
+     },
+     "submission_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "protected": {
+     "algorithm": "Ed25519",
+     "canonicalization": "WHP-JCS-I1",
+     "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "type": "WHP-STANDING-MARK-v1"
+    },
+    "signature": "EhpHupjaNpaMziSEp7l/XLtDjgn/sGAzQAM5vnj3+m52koyH1D1e+V53Iu3BZv/5MVCme+ReX2DahQIP1rs2Bg=="
+   },
+   "expected": {
+    "freshness": "CURRENT",
+    "mark_verified": false,
+    "outcome": "TRANSITION_ALLOWED",
+    "problems": [
+     "SIGNATURE:SIGNATURE_INVALID"
+    ],
+    "substantive": "SUBSTANTIVE"
+   },
+   "id": "tampered",
+   "now": 1050,
+   "pinned": "MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo="
+  }
+ ],
+ "jcs": [
+  {
+   "expected": "{\"a\":1,\"b\":[1,2,null,true]}",
+   "input": {
+    "a": 1,
+    "b": [
+     1,
+     2,
+     null,
+     true
+    ]
+   }
+  },
+  {
+   "expected": "{\"a\":{\"x\":-7,\"y\":0},\"z\":\"é \\n\\\"\"}",
+   "input": {
+    "a": {
+     "x": -7,
+     "y": 0
+    },
+    "z": "é \n\""
+   }
+  },
+  {
+   "expected": "{\"\":3,\"a\":2,\"b\":1}",
+   "input": {
+    "": 3,
+    "a": 2,
+    "b": 1
+   }
+  }
+ ],
+ "note": "All objects are synthetic TEST fixtures signed with the public RFC 8032 TEST 1 key. They are not issuer statements.",
+ "object_id": [
+  {
+   "expected": "sha256:066dc21fbc2d7c7672e2f8ade41d319bf4bb9fa63f06c81337b96f092e380bb9",
+   "input": {
+    "a": 1,
+    "b": [
+     1,
+     2,
+     null,
+     true
+    ]
+   }
+  },
+  {
+   "expected": "sha256:26bf084cbdb3a95fb3a2c88332f529061c51e1c11636789c381be6d1cb2a6a4f",
+   "input": {
+    "a": {
+     "x": -7,
+     "y": 0
+    },
+    "z": "é \n\""
+   }
+  },
+  {
+   "expected": "sha256:d792e8ddd8cb77612a1cc604a6329b66367e163a1ad0dd07d231242f585d39ee",
+   "input": {
+    "": 3,
+    "a": 2,
+    "b": 1
+   }
+  }
+ ],
+ "receipt": [
+  {
+   "expected": {
+    "problems": [],
+    "valid": true
+   },
+   "id": "valid",
+   "mark": {
+    "payload": {
+     "environment": "TEST",
+     "expires_at": 1100,
+     "finding_disposition": "POSITIVE_STANDING_FINDING",
+     "integration_rule": "Synthetic test fixture. Not an issuer statement.",
+     "issued_at": 1000,
+     "issuer": "Wheeler Hubbell Publishing",
+     "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "mark_id": "WHP-SM-TEST-0001",
+     "object_binding": {
+      "examined_material": {
+       "bytes": 313,
+       "fallback": false,
+       "field": "data",
+       "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "examined_question": "The published contract names Base mainnet USDC as the payment asset.",
+      "requested_operation": "INFORM",
+      "submitted_bytes_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+     },
+     "standing": {
+      "bounds": {
+       "jurisdiction": "wheeler-hubbell-publishing",
+       "scope": "whp-sovereign-standing"
+      },
+      "components": {
+       "SOURCE": "ESTABLISHED"
+      },
+      "outcome": "TRANSITION_ALLOWED",
+      "permitted_operations": [
+       "DESCRIBE",
+       "INFORM"
+      ]
+     },
+     "submission_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "protected": {
+     "algorithm": "Ed25519",
+     "canonicalization": "WHP-JCS-I1",
+     "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "type": "WHP-STANDING-MARK-v1"
+    },
+    "signature": "EhpHupjaNpaMziSEp7l/XLtDjgn/sGAzQAM5vnj3+m52koyH1D1e+V53Iu3BZv/5MVCme+ReX2DahQIP1rs2Bg=="
+   },
+   "pinned": "MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo=",
+   "receipt": {
+    "payload": {
+     "correspondence": {
+      "issued_object_check": "NOT_CHECKED",
+      "received_object_sha256": "91587263fe114ddebe4707b817c2f434afd88ae15be55829745edda606264456"
+     },
+     "does_not_establish": [
+      "RECEIVER_UNDERSTANDING",
+      "RECEIVER_AGREEMENT",
+      "RECEIVER_ACCEPTANCE",
+      "AUTHORIZATION_OF_ANY_ACTION",
+      "SUBSTANTIVE_CORRECTNESS_OF_THE_EXAMINATION"
+     ],
+     "establishes": [
+      "AUTHENTICATED_RECEPTION_EVENT",
+      "CORRESPONDENCE_OF_RECEIVED_TO_ISSUED_OBJECT"
+     ],
+     "issuing_authority": "Wheeler Hubbell Publishing",
+     "mark_ref": {
+      "envelope_sha256": "91587263fe114ddebe4707b817c2f434afd88ae15be55829745edda606264456",
+      "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+      "mark_id": "WHP-SM-TEST-0001"
+     },
+     "reception_event": {
+      "event_id": "b0fd076f4891e726924b60963a1a6fd184fcf2a1bf16da9362cf96205d725c7f",
+      "received_at": 1050,
+      "state": "RECEIVED_VERIFIED"
+     },
+     "recipient": {
+      "authenticated_by": null,
+      "label": "conformance-recipient"
+     },
+     "type": "WHP-STANDING-RECEIPT-v1",
+     "verification_evidence": {
+      "checks": {
+       "COMPLETE": "PASS",
+       "CORRESPONDS_TO_ISSUED": "NOT_CHECKED",
+       "FRESH": "PASS",
+       "ISSUER_PINNED": "PASS",
+       "REPLAY": "FIRST_RECEIPT",
+       "SIGNATURE": "PASS"
+      },
+      "kit": "standing-receiver/0.1.0",
+      "problems": []
+     }
+    },
+    "protected": {
+     "algorithm": "Ed25519",
+     "canonicalization": "WHP-JCS-I1",
+     "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "type": "WHP-STANDING-RECEIPT-v1"
+    },
+    "signature": "AX1QV57hyDoIVCF5HNUvCn0zWatd+hNWDvUYillK0YzY7Mdbad/FmNz0XbDs3VKbL/yQ+YvNEA+ji9k19jXYBg=="
+   }
+  },
+  {
+   "expected": {
+    "problems": [
+     "CLAIMS_ACCEPTANCE_OR_AUTHORIZATION"
+    ],
+    "valid": false
+   },
+   "id": "claims_acceptance",
+   "mark": {
+    "payload": {
+     "environment": "TEST",
+     "expires_at": 1100,
+     "finding_disposition": "POSITIVE_STANDING_FINDING",
+     "integration_rule": "Synthetic test fixture. Not an issuer statement.",
+     "issued_at": 1000,
+     "issuer": "Wheeler Hubbell Publishing",
+     "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "mark_id": "WHP-SM-TEST-0001",
+     "object_binding": {
+      "examined_material": {
+       "bytes": 313,
+       "fallback": false,
+       "field": "data",
+       "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "examined_question": "The published contract names Base mainnet USDC as the payment asset.",
+      "requested_operation": "INFORM",
+      "submitted_bytes_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+     },
+     "standing": {
+      "bounds": {
+       "jurisdiction": "wheeler-hubbell-publishing",
+       "scope": "whp-sovereign-standing"
+      },
+      "components": {
+       "SOURCE": "ESTABLISHED"
+      },
+      "outcome": "TRANSITION_ALLOWED",
+      "permitted_operations": [
+       "DESCRIBE",
+       "INFORM"
+      ]
+     },
+     "submission_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "protected": {
+     "algorithm": "Ed25519",
+     "canonicalization": "WHP-JCS-I1",
+     "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "type": "WHP-STANDING-MARK-v1"
+    },
+    "signature": "EhpHupjaNpaMziSEp7l/XLtDjgn/sGAzQAM5vnj3+m52koyH1D1e+V53Iu3BZv/5MVCme+ReX2DahQIP1rs2Bg=="
+   },
+   "pinned": "MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo=",
+   "receipt": {
+    "payload": {
+     "accepted": true,
+     "correspondence": {
+      "issued_object_check": "NOT_CHECKED",
+      "received_object_sha256": "91587263fe114ddebe4707b817c2f434afd88ae15be55829745edda606264456"
+     },
+     "does_not_establish": [
+      "RECEIVER_UNDERSTANDING",
+      "RECEIVER_AGREEMENT",
+      "RECEIVER_ACCEPTANCE",
+      "AUTHORIZATION_OF_ANY_ACTION",
+      "SUBSTANTIVE_CORRECTNESS_OF_THE_EXAMINATION"
+     ],
+     "establishes": [
+      "AUTHENTICATED_RECEPTION_EVENT",
+      "CORRESPONDENCE_OF_RECEIVED_TO_ISSUED_OBJECT"
+     ],
+     "issuing_authority": "Wheeler Hubbell Publishing",
+     "mark_ref": {
+      "envelope_sha256": "91587263fe114ddebe4707b817c2f434afd88ae15be55829745edda606264456",
+      "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+      "mark_id": "WHP-SM-TEST-0001"
+     },
+     "reception_event": {
+      "event_id": "b0fd076f4891e726924b60963a1a6fd184fcf2a1bf16da9362cf96205d725c7f",
+      "received_at": 1050,
+      "state": "RECEIVED_VERIFIED"
+     },
+     "recipient": {
+      "authenticated_by": null,
+      "label": "conformance-recipient"
+     },
+     "type": "WHP-STANDING-RECEIPT-v1",
+     "verification_evidence": {
+      "checks": {
+       "COMPLETE": "PASS",
+       "CORRESPONDS_TO_ISSUED": "NOT_CHECKED",
+       "FRESH": "PASS",
+       "ISSUER_PINNED": "PASS",
+       "REPLAY": "FIRST_RECEIPT",
+       "SIGNATURE": "PASS"
+      },
+      "kit": "standing-receiver/0.1.0",
+      "problems": []
+     }
+    },
+    "protected": {
+     "algorithm": "Ed25519",
+     "canonicalization": "WHP-JCS-I1",
+     "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "type": "WHP-STANDING-RECEIPT-v1"
+    },
+    "signature": "DAkA1QttDECu2DSjkl5zt6uNnhscon3ajggv3DxO4uMim/d0j4wVFRvITxQjr94hMQWtay9HsIF3Od+dZsLBCA=="
+   }
+  },
+  {
+   "expected": {
+    "problems": [
+     "MARK_REF_MISMATCH",
+     "CORRESPONDENCE_MISMATCH"
+    ],
+    "valid": false
+   },
+   "id": "wrong_mark",
+   "mark": {
+    "payload": {
+     "environment": "TEST",
+     "expires_at": 1100,
+     "finding_disposition": "POSITIVE_STANDING_FINDING",
+     "integration_rule": "Synthetic test fixture. Not an issuer statement.",
+     "issued_at": 1000,
+     "issuer": "Wheeler Hubbell Publishing",
+     "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "mark_id": "WHP-SM-TEST-0002",
+     "object_binding": {
+      "examined_material": {
+       "bytes": 313,
+       "fallback": false,
+       "field": "data",
+       "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "examined_question": "The published contract names Base mainnet USDC as the payment asset.",
+      "requested_operation": "INFORM",
+      "submitted_bytes_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+     },
+     "standing": {
+      "bounds": {
+       "jurisdiction": "wheeler-hubbell-publishing",
+       "scope": "whp-sovereign-standing"
+      },
+      "components": {
+       "SOURCE": "ESTABLISHED"
+      },
+      "outcome": "TRANSITION_ALLOWED",
+      "permitted_operations": [
+       "DESCRIBE",
+       "INFORM"
+      ]
+     },
+     "submission_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "protected": {
+     "algorithm": "Ed25519",
+     "canonicalization": "WHP-JCS-I1",
+     "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "type": "WHP-STANDING-MARK-v1"
+    },
+    "signature": "LoZDNiO6tZfkEgZDUHb0HII3CvmVtToX0PoWboUykLfj3OUsJlI/rY1LDLwbx6yv63v0bv/DtE8KR9R5R68MAQ=="
+   },
+   "pinned": "MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo=",
+   "receipt": {
+    "payload": {
+     "correspondence": {
+      "issued_object_check": "NOT_CHECKED",
+      "received_object_sha256": "91587263fe114ddebe4707b817c2f434afd88ae15be55829745edda606264456"
+     },
+     "does_not_establish": [
+      "RECEIVER_UNDERSTANDING",
+      "RECEIVER_AGREEMENT",
+      "RECEIVER_ACCEPTANCE",
+      "AUTHORIZATION_OF_ANY_ACTION",
+      "SUBSTANTIVE_CORRECTNESS_OF_THE_EXAMINATION"
+     ],
+     "establishes": [
+      "AUTHENTICATED_RECEPTION_EVENT",
+      "CORRESPONDENCE_OF_RECEIVED_TO_ISSUED_OBJECT"
+     ],
+     "issuing_authority": "Wheeler Hubbell Publishing",
+     "mark_ref": {
+      "envelope_sha256": "91587263fe114ddebe4707b817c2f434afd88ae15be55829745edda606264456",
+      "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+      "mark_id": "WHP-SM-TEST-0001"
+     },
+     "reception_event": {
+      "event_id": "b0fd076f4891e726924b60963a1a6fd184fcf2a1bf16da9362cf96205d725c7f",
+      "received_at": 1050,
+      "state": "RECEIVED_VERIFIED"
+     },
+     "recipient": {
+      "authenticated_by": null,
+      "label": "conformance-recipient"
+     },
+     "type": "WHP-STANDING-RECEIPT-v1",
+     "verification_evidence": {
+      "checks": {
+       "COMPLETE": "PASS",
+       "CORRESPONDS_TO_ISSUED": "NOT_CHECKED",
+       "FRESH": "PASS",
+       "ISSUER_PINNED": "PASS",
+       "REPLAY": "FIRST_RECEIPT",
+       "SIGNATURE": "PASS"
+      },
+      "kit": "standing-receiver/0.1.0",
+      "problems": []
+     }
+    },
+    "protected": {
+     "algorithm": "Ed25519",
+     "canonicalization": "WHP-JCS-I1",
+     "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "type": "WHP-STANDING-RECEIPT-v1"
+    },
+    "signature": "AX1QV57hyDoIVCF5HNUvCn0zWatd+hNWDvUYillK0YzY7Mdbad/FmNz0XbDs3VKbL/yQ+YvNEA+ji9k19jXYBg=="
+   }
+  }
+ ],
+ "request": [
+  {
+   "expected": {
+    "body_jcs": "{\"claim\":\"The published contract names Base mainnet USDC as the payment asset.\",\"data\":\"The payment asset is USDC.\\nThe price is exactly 1.00 USDC.\",\"requested_operation\":\"INFORM\"}",
+    "material_bytes": 58,
+    "ok": true
+   },
+   "id": "valid",
+   "input": {
+    "claim": "The published contract names Base mainnet USDC as the payment asset.",
+    "data": "The payment asset is USDC.\nThe price is exactly 1.00 USDC."
+   }
+  },
+  {
+   "expected": {
+    "code": "NOT_A_STRING",
+    "ok": false
+   },
+   "id": "object_claim",
+   "input": {
+    "claim": {
+     "statement": "The published contract names Base mainnet USDC as the payment asset."
+    },
+    "data": "The payment asset is USDC.\nThe price is exactly 1.00 USDC."
+   }
+  },
+  {
+   "expected": {
+    "code": "EMPTY_DATA",
+    "ok": false
+   },
+   "id": "empty_data",
+   "input": {
+    "claim": "The published contract names Base mainnet USDC as the payment asset.",
+    "data": "  "
+   }
+  },
+  {
+   "expected": {
+    "code": "MISSING_CLAIM",
+    "ok": false
+   },
+   "id": "missing_claim",
+   "input": {
+    "data": "The payment asset is USDC.\nThe price is exactly 1.00 USDC."
+   }
+  }
+ ],
+ "signature": [
+  {
+   "envelope": {
+    "payload": {
+     "environment": "TEST",
+     "expires_at": 1100,
+     "finding_disposition": "POSITIVE_STANDING_FINDING",
+     "integration_rule": "Synthetic test fixture. Not an issuer statement.",
+     "issued_at": 1000,
+     "issuer": "Wheeler Hubbell Publishing",
+     "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "mark_id": "WHP-SM-TEST-0001",
+     "object_binding": {
+      "examined_material": {
+       "bytes": 313,
+       "fallback": false,
+       "field": "data",
+       "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "examined_question": "The published contract names Base mainnet USDC as the payment asset.",
+      "requested_operation": "INFORM",
+      "submitted_bytes_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+     },
+     "standing": {
+      "bounds": {
+       "jurisdiction": "wheeler-hubbell-publishing",
+       "scope": "whp-sovereign-standing"
+      },
+      "components": {
+       "SOURCE": "ESTABLISHED"
+      },
+      "outcome": "TRANSITION_ALLOWED",
+      "permitted_operations": [
+       "DESCRIBE",
+       "INFORM"
+      ]
+     },
+     "submission_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "protected": {
+     "algorithm": "Ed25519",
+     "canonicalization": "WHP-JCS-I1",
+     "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "type": "WHP-STANDING-MARK-v1"
+    },
+    "signature": "EhpHupjaNpaMziSEp7l/XLtDjgn/sGAzQAM5vnj3+m52koyH1D1e+V53Iu3BZv/5MVCme+ReX2DahQIP1rs2Bg=="
+   },
+   "expected": {
+    "reason": "OK",
+    "valid": true
+   },
+   "id": "valid",
+   "pinned": "MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo="
+  },
+  {
+   "envelope": {
+    "payload": {
+     "environment": "TEST",
+     "expires_at": 1100,
+     "finding_disposition": "POSITIVE_STANDING_FINDING",
+     "integration_rule": "Synthetic test fixture. Not an issuer statement.",
+     "issued_at": 1001,
+     "issuer": "Wheeler Hubbell Publishing",
+     "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "mark_id": "WHP-SM-TEST-0001",
+     "object_binding": {
+      "examined_material": {
+       "bytes": 313,
+       "fallback": false,
+       "field": "data",
+       "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "examined_question": "The published contract names Base mainnet USDC as the payment asset.",
+      "requested_operation": "INFORM",
+      "submitted_bytes_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+     },
+     "standing": {
+      "bounds": {
+       "jurisdiction": "wheeler-hubbell-publishing",
+       "scope": "whp-sovereign-standing"
+      },
+      "components": {
+       "SOURCE": "ESTABLISHED"
+      },
+      "outcome": "TRANSITION_ALLOWED",
+      "permitted_operations": [
+       "DESCRIBE",
+       "INFORM"
+      ]
+     },
+     "submission_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "protected": {
+     "algorithm": "Ed25519",
+     "canonicalization": "WHP-JCS-I1",
+     "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "type": "WHP-STANDING-MARK-v1"
+    },
+    "signature": "EhpHupjaNpaMziSEp7l/XLtDjgn/sGAzQAM5vnj3+m52koyH1D1e+V53Iu3BZv/5MVCme+ReX2DahQIP1rs2Bg=="
+   },
+   "expected": {
+    "reason": "SIGNATURE_INVALID",
+    "valid": false
+   },
+   "id": "tampered",
+   "pinned": "MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo="
+  },
+  {
+   "envelope": {
+    "payload": {
+     "environment": "TEST",
+     "expires_at": 1100,
+     "finding_disposition": "POSITIVE_STANDING_FINDING",
+     "integration_rule": "Synthetic test fixture. Not an issuer statement.",
+     "issued_at": 1000,
+     "issuer": "Wheeler Hubbell Publishing",
+     "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "mark_id": "WHP-SM-TEST-0001",
+     "object_binding": {
+      "examined_material": {
+       "bytes": 313,
+       "fallback": false,
+       "field": "data",
+       "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "examined_question": "The published contract names Base mainnet USDC as the payment asset.",
+      "requested_operation": "INFORM",
+      "submitted_bytes_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+     },
+     "standing": {
+      "bounds": {
+       "jurisdiction": "wheeler-hubbell-publishing",
+       "scope": "whp-sovereign-standing"
+      },
+      "components": {
+       "SOURCE": "ESTABLISHED"
+      },
+      "outcome": "TRANSITION_ALLOWED",
+      "permitted_operations": [
+       "DESCRIBE",
+       "INFORM"
+      ]
+     },
+     "submission_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "protected": {
+     "algorithm": "Ed25519",
+     "canonicalization": "WHP-JCS-I1",
+     "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "type": "WHP-STANDING-MARK-v1"
+    },
+    "signature": "EhpHupjaNpaMziSEp7l/XLtDjgn/sGAzQAM5vnj3+m52koyH1D1e+V53Iu3BZv/5MVCme+ReX2DahQIP1rs2Bg=="
+   },
+   "expected": {
+    "reason": "KEY_NOT_PINNED",
+    "valid": false
+   },
+   "id": "wrong_pin",
+   "pinned": "MCowBQYDK2VwAyEAcpFVUj6xDgsUsKJK2r2rLk6R+te2lghdHE8jvjl9SBk="
+  },
+  {
+   "envelope": {
+    "payload": {
+     "environment": "TEST",
+     "expires_at": 1100,
+     "finding_disposition": "POSITIVE_STANDING_FINDING",
+     "integration_rule": "Synthetic test fixture. Not an issuer statement.",
+     "issued_at": 1000,
+     "issuer": "Wheeler Hubbell Publishing",
+     "issuer_key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "mark_id": "WHP-SM-TEST-0001",
+     "object_binding": {
+      "examined_material": {
+       "bytes": 313,
+       "fallback": false,
+       "field": "data",
+       "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "examined_question": "The published contract names Base mainnet USDC as the payment asset.",
+      "requested_operation": "INFORM",
+      "submitted_bytes_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+     },
+     "standing": {
+      "bounds": {
+       "jurisdiction": "wheeler-hubbell-publishing",
+       "scope": "whp-sovereign-standing"
+      },
+      "components": {
+       "SOURCE": "ESTABLISHED"
+      },
+      "outcome": "TRANSITION_ALLOWED",
+      "permitted_operations": [
+       "DESCRIBE",
+       "INFORM"
+      ]
+     },
+     "submission_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "protected": {
+     "algorithm": "Ed25519",
+     "canonicalization": "WHP-JCS-I1",
+     "key_id": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+     "type": "WHP-STANDING-MARK-v1"
+    },
+    "signature": "EhpHupjaNpaMziSEp7l/XLtDjgn/sGAzQAM5vnj3+m52koyH1D1e+V53Iu3BZv/5MVCme+ReX2DahQIP1rs2Bg=="
+   },
+   "expected": {
+    "reason": "TYPE_MISMATCH",
+    "valid": false
+   },
+   "expected_type": "OTHER",
+   "id": "wrong_type",
+   "pinned": "MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo="
+  },
+  {
+   "envelope": {
+    "payload": {}
+   },
+   "expected": {
+    "reason": "ENVELOPE_INCOMPLETE",
+    "valid": false
+   },
+   "id": "incomplete",
+   "pinned": "MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo="
+  }
+ ],
+ "suite": "standing-receiver-conformance/1",
+ "test_key_spki_b64": "MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo="
+}

@@ -1,0 +1,9 @@
+[project]
+name = "standing-receiver"
+version = "0.1.1"
+description = "Receiving kit for Wheeler Hubbell Publishing Standing Mark results: request construction, offline verification, evidence output, reception records"
+requires-python = ">=3.9"
+dependencies = ["cryptography"]
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
