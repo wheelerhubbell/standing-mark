@@ -4,6 +4,16 @@ Base URL: `https://decisionintegrity.wheelerhubbellpublishing.com`
 
 Everything below is free except the paid examination retry in step 4. The live contract at `GET /v1/contract` is the source of truth; this guide describes it as of November 13, 2026.
 
+## 0. Install and check the free path
+
+```sh
+git clone https://github.com/wheelerhubbell/standing-mark.git
+cd standing-mark
+python3 scripts/check_discovery.py
+```
+
+This checks live discovery, SDK key consistency and local test-vector signatures without calling `/v1/evaluate`. [MCP client setup](../mcp/README.md) and [independent verification commands](verification.md) are available separately. Old SDKs in the publishing-site repository are legacy material, not the current integration path.
+
 ## 1. Read the contract
 
 ```
@@ -67,3 +77,7 @@ Offline, independently: run `verification/verify.py` or `verification/verify.js`
 - Python: `sdk/python/standing_mark.py` (standard library; offline verification needs `cryptography`).
 - Node: `sdk/js/standing-mark.js` (standard library only).
 - MCP: `mcp/standing_mark_mcp.py` presents the service as four tools to any MCP-capable agent. It is a client-side adapter: the service itself speaks HTTP.
+
+## Keep reusable evidence
+
+See [discovery-to-evidence loop](propagation-loop.md). Keep private payloads and payer identities out of public evidence. Publication and successful test calls are not evidence of external adoption.

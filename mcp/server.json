@@ -1,12 +1,11 @@
 {
-  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
-  "name": "io.github.wheelerhubbell/standing-mark",
-  "description": "Independent examination of agent claims and proposed actions. Signed, verifiable results from Wheeler Hubbell Publishing's Standing Mark service.",
-  "version": "1.0.0",
-  "packages": [{
-    "registryType": "pypi",
-    "identifier": "standing-mark-mcp",
-    "version": "1.0.0",
-    "transport": {"type": "stdio"}
-  }]
+  "status": "SOURCE_INSTALL_ONLY",
+  "name": "Standing Mark MCP adapter",
+  "description": "Local Python stdio adapter for the HTTP examination service operated by Wheeler Hubbell Publishing, Inc.",
+  "repository": "https://github.com/wheelerhubbell/standing-mark",
+  "documentation": "https://github.com/wheelerhubbell/standing-mark/blob/main/mcp/README.md",
+  "transport": "stdio",
+  "source": "mcp/standing_mark_mcp.py",
+  "remote_endpoint": null,
+  "note": "No native remote MCP endpoint, PyPI package or registry publication is claimed. Clone the repository and run the local Python source."
 }
