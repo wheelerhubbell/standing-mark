@@ -1,6 +1,6 @@
 <?php
 /**
- * Universal Intake and Interpretation Layer, WHP-INTAKE-1.0.0 (PHP port of standing_intake/intake.py).
+ * Universal Intake and Interpretation Layer, WHP-INTAKE-1.2.0 (PHP port of standing_intake/intake.py).
  *
  * Additive and deterministic. Never calls the examination engine and never changes it.
  * Not wired to anything by this file: the caller decides, behind a default-OFF flag.
@@ -136,10 +136,12 @@ final class DiIuRec {
 }
 
 final class DiIntakeUniversal {
-    public const VERSION = 'WHP-INTAKE-1.0.0';
+    public const VERSION = 'WHP-INTAKE-1.2.0';
     public const MAX_BYTES = 262144;
     public const MAX_DEPTH = 64;
-    private const OPS = ['DESCRIBE', 'INFORM', 'INQUIRE', 'WARN', 'RECOMMEND', 'EXECUTE'];
+    // WHP-INTAKE-1.2.0 (2026-11-20, operator-approved): the gate keeps no fixed operation list.
+    // Any operation name is taken as given; the gate may refuse a missing object or a non-string
+    // operation, never an operation outside a predetermined container.
     private const CLAIM_KEYS = ['claim', 'proposition', 'statement', 'question', 'assertion'];
     private const MATERIAL_KEYS = ['data', 'material', 'text', 'document', 'content', 'body', 'evidence', 'record', 'payload', 'transaction', 'event', 'prompt', 'input'];
     private const STANDING = ['established_fact', 'established', 'source_grade', 'epistemic_status', 'attested', 'attestation', 'signature',
@@ -177,8 +179,8 @@ final class DiIntakeUniversal {
 
         $op = $r->op;
         if ($op === null) { $op = 'INFORM'; $r->infer('requested_operation', 'INFORM', 'caller named none; INFORM is the least consequential default'); }
-        elseif (!is_string($op) || !in_array($op, self::OPS, true)) {
-            $r->issue('UNSUPPORTED_OPERATION', 'requested operation ' . self::pyRepr($op) . ' is not one of ' . implode(', ', self::OPS)); $op = null;
+        elseif (!is_string($op)) {
+            $r->issue('UNSUPPORTED_OPERATION', 'requested operation ' . self::pyRepr($op) . ' is not a string; operation names are taken as given'); $op = null;
         }
         $missing = [];
         $hasClaim = $r->claim !== null && $r->claim !== '';
@@ -280,6 +282,13 @@ final class DiIntakeUniversal {
             $r->interp('submission is an evidence package (list)', '', 'R-PKG-LIST');
             $w = new DiIuObj(); $w->set('items', $obj); $obj = $w;
         }
+        if (is_string($obj)) {
+            if (trim($obj) === '') { $r->issue('EMPTY_SUBMISSION', 'top-level JSON string is empty'); return; }
+            $r->claim = $obj;
+            $i = $r->ext('proposition', $obj, '/', 'R-JSON-TOP-STRING'); $r->trace->set('claim', $i);
+            $r->interp('proposition is the top-level JSON string (the documented bare-string shape)', '/', 'R-JSON-TOP-STRING');
+            return;
+        }
         if (!($obj instanceof DiIuObj)) { $r->issue('UNSUPPORTED_SHAPE', 'top-level JSON is a scalar'); return; }
         if ($obj->get('version') === 'WHP-STANDING-SUBMISSION-v1' && is_array($obj->get('nodes')) && count($obj->get('nodes')) > 0) {
             $r->passthrough = $obj;
@@ -318,6 +327,25 @@ final class DiIntakeUniversal {
             $r->interp(count($r->multi) . ' separate propositions supplied by the caller; each is examined separately', '', 'R-MULTI-PROPOSITION');
         } elseif (count($r->multi) === 1 && $r->claim === null) {
             $r->claim = $r->multi[0][0]; $r->trace->set('claim', $r->ext('proposition', $r->claim, $r->multi[0][1], 'R-JSON-CLAIM-LIST'));
+        }
+        if ($r->claim === null && count($r->multi) === 0 && count($r->issues) === 0) {
+            // Contract precedence (WHP-INPUT-SCHEMA-1.3.0): claim aliases (claim, text, prompt,
+            // content, statement, proposition) beat subject; subject beats object.id. The
+            // text/prompt/content aliases are handled by the fallback loop below, so subject
+            // and object.id are read only when none of those alias strings is present.
+            $hasAlias = false;
+            foreach (['text', 'prompt', 'content'] as $k) { if (self::isStr($obj->get($k))) { $hasAlias = true; break; } }
+            if (!$hasAlias) {
+                $subj = $obj->get('subject');
+                $ob = $obj->get('object');
+                if (self::isStr($subj)) {
+                    $r->claim = $subj; $r->trace->set('claim', $r->ext('proposition', $subj, '/subject', 'R-JSON-SUBJECT'));
+                    $r->interp('no claim alias string; the subject string is mapped to the proposition', '/subject', 'R-JSON-SUBJECT');
+                } elseif ($ob instanceof DiIuObj && self::isStr($ob->get('id'))) {
+                    $r->claim = $ob->get('id'); $r->trace->set('claim', $r->ext('proposition', $r->claim, '/object/id', 'R-JSON-OBJECT-ID'));
+                    $r->interp('no claim alias or subject string; object.id is the proposition', '/object/id', 'R-JSON-OBJECT-ID');
+                }
+            }
         }
         if ($r->claim === null && count($r->multi) === 0 && count($r->issues) === 0) {
             foreach (['data', 'text', 'prompt', 'content', 'input'] as $k) {

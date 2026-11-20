@@ -2,7 +2,7 @@
 
 Base URL: `https://decisionintegrity.wheelerhubbellpublishing.com`
 
-Everything below is free except the paid examination retry in step 4. The live contract at `GET /v1/contract` is the source of truth; this guide describes it as of November 13, 2026.
+Everything below is free except the paid examination retry in step 4. The live contract at `GET /v1/contract` is the source of truth; this guide describes it as of November 20, 2026.
 
 ## 0. Install and check the free path
 
@@ -20,7 +20,7 @@ This checks live discovery, SDK key consistency and local test-vector signatures
 GET /v1/contract
 ```
 
-Returns the profile, the four routes, the payment terms (scheme `WHP-BASE-USDC-FLAT-1`, network `eip155:8453`, USDC asset, fixed price exactly 1.00 USDC, pay_to address, minimum 5 confirmations), the determinism rule, the signed result type and the published issuer key reference.
+Returns the profile, the routes, the payment terms (protocol `x402-v2`, scheme `exact`, network `eip155:8453`, USDC asset, fixed price exactly 1.00 USDC, pay_to address, facilitator), the determinism rule, the signed result type and the published issuer key reference.
 
 ## 2. Pin the issuer key
 
@@ -48,20 +48,19 @@ Content-Type: application/json
 }
 ```
 
-Submit the claim or proposed action with its supporting material in the accepted input schema. The evaluator reads the proposition from a string `claim` (or `subject`, or `object.id`) and the examination material from a string `data`. When no `data` string is supplied, the claim itself is the examined material (an explicit, recorded fallback). An object-valued `claim` is not a proposition and no field named `material` is read: a request with no readable proposition and no readable material is examined over zero bytes. The authoritative field list is `input_schema` in the live contract at `GET /v1/contract` (mirrored in `openapi.json`). Submissions must be strict JSON under the service's canonical rule: safe integers only (no floats, no -0, no integers beyond ±2^53-1), no duplicate object keys, well-formed Unicode, at most 64 levels deep and 262144 bytes. See `docs/rejection-boundary.md`.
+Submit the claim or proposed action with its supporting material in the accepted input schema. The evaluator reads the proposition from a string `claim` (aliases `text`, `prompt`, `content`, `statement`, `proposition`; otherwise a string `subject`, then `object.id`) and the examination material from `data` (string or object; a `material` field is mapped to `data`). A bare JSON string body is treated as the claim. When no `data` string is supplied, the claim itself is the examined material (an explicit, recorded fallback). `requested_operation` is taken as given: the gate keeps no fixed list and defaults to `INFORM`. A request with no readable proposition is refused `400 NOT_EXAMINABLE` before any payment movement, naming the missing objects. The authoritative field list is `input_schema` in the live contract at `GET /v1/contract` (mirrored in `openapi.json`). Submissions must be strict JSON under the service's canonical rule: safe integers only (no floats, no -0, no integers beyond ±2^53-1), no duplicate object keys, well-formed Unicode, at most 64 levels deep and 262144 bytes. See `docs/rejection-boundary.md`.
 
-An unpaid request is answered `402 PAYMENT_REQUIRED` with a quote under `payment_required`: `quote_id`, `amount_units` (USDC atomic units, 6 decimals), `pay_to`, `expires` (epoch seconds). The quote is bound to the exact request bytes; changing one byte produces a different quote. Quotes self-expire; an unpaid quote consumes nothing.
+An unpaid request is answered `402 Payment Required` with x402 v2 terms: `accepts[0]` carries `scheme` (`exact`), `network` (`eip155:8453`), `asset` (USDC), `amount` (`1000000`, 6 decimals), `payTo`, `maxTimeoutSeconds` and `extra`; the same terms are mirrored in the `payment-required` response header. Unpaid requests consume nothing.
 
 ## 4. Pay and retry (the caller's decision)
 
-Pay exactly `amount_units` of USDC on Base to `pay_to`, wait for at least 5 confirmations, then retry the identical request body with headers:
+Sign an EIP-3009 `transferWithAuthorization` for exactly `amount` of USDC on Base to `payTo` (fields `from`, `to`, `value`, `validAfter`, `validBefore`, `nonce`), then retry the identical request body with the x402 v2 envelope in the `payment-signature` (or `x-payment`) header:
 
 ```
-X-WHP-Quote: <quote_id>
-X-WHP-Payment-Tx: <Base transaction hash>
+payment-signature: {"x402Version": 2, "accepted": <the accepts entry from the 402 terms>, "payload": {"signature": "0x...", "authorization": {"from": "...", "to": "...", "value": "1000000", "validAfter": "...", "validBefore": "...", "nonce": "0x..."}}}
 ```
 
-The service returns the signed examination result. Payment buys the examination, not a positive finding: a result can be a Standing Mark (established) or a signed record naming what is not established. Both are correctly delivered examinations.
+The facilitator verifies and settles; no customer ETH gas is required. The service returns the signed examination result with a `payment-response` header. A signed authorization settles at most once: a replay returns the delivered result, and a settled but undelivered purchase is re-delivered from its stored record, so no retry can double-charge. Payment buys the examination, not a positive finding: a result can be a Standing Mark (established) or a signed record naming what is not established. Both are correctly delivered examinations.
 
 ## 5. Verify the result
 

@@ -84,9 +84,22 @@ def test_missing_material_is_limited_with_disclosure_and_informed_choice():
 def test_empty_and_whitespace_submissions():
     for s in ("", "   \n ", b"", {}, []): assert lvl(intake(s)) == "NOT_EXAMINABLE"
 
-def test_unsupported_operation_is_refused_not_substituted():
-    r = intake({"claim": C, "data": "x", "requested_operation": "APPROVE"})
+def test_any_operation_name_is_taken_as_given():
+    # WHP-INTAKE-1.2.0: no fixed operation list; the gate never refuses an operation name.
+    for op in ("APPROVE", "REVIEW", "CONCLUDE", "ACT", "describe"):
+        r = intake({"claim": C, "data": "x", "requested_operation": op})
+        assert lvl(r) == "EXAMINABLE" and canon(r)[0]["requested_operation"] == op
+
+def test_non_string_operation_is_refused_not_substituted():
+    r = intake({"claim": C, "data": "x", "requested_operation": 7})
     assert lvl(r) == "NOT_EXAMINABLE" and r["examinability"]["issues"][0]["code"] == "UNSUPPORTED_OPERATION" and canon(r) == []
+
+def test_bare_json_string_is_the_claim():
+    r = intake(json.dumps(C), "application/json")
+    assert lvl(r) in ("EXAMINABLE", "EXAMINABLE_WITH_LIMITS") and canon(r)[0]["claim"] == C
+    assert intake('""', "application/json")["examinability"]["level"] == "NOT_EXAMINABLE"
+    assert intake('"   "', "application/json")["examinability"]["level"] == "NOT_EXAMINABLE"
+    assert intake('42', "application/json")["examinability"]["level"] == "NOT_EXAMINABLE"
 
 def test_provenance_is_never_manufactured():
     b = canon(intake({"claim": C, "data": "\n".join(M)}))[0]

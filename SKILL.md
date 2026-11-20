@@ -18,15 +18,15 @@ Standing Mark is an independent examination service operated by Wheeler Hubbell 
 ## Invocation
 
 1. Read the live contract first; treat it as authoritative over any copy, including this file. Its `input_schema` field is the authoritative list of the fields the evaluator reads.
-2. `POST /v1/evaluate` with a JSON object in that input schema: the proposition as a string `claim` (or `subject`, or `object.id`), the examination material as a string `data`, plus `provenance.source`, `provenance.evidence` and an authority `warrant` as applicable. With no `data` string, the claim itself is the examined material (a recorded fallback). An object-valued `claim` is not a proposition and no field named `material` is read; a request with no readable proposition and no readable material is examined over zero bytes. An unpaid request returns HTTP 402 with `payment_required` carrying `quote_id`, `amount_units`, `pay_to` and `expires`.
-3. Keep the exact request bytes unchanged. The quote ID is bound to the SHA-256 of those bytes; any change requires a new quote.
+2. `POST /v1/evaluate` with a JSON object in that input schema: the proposition as a string `claim` (aliases `text`, `prompt`, `content`, `statement`, `proposition`; otherwise a string `subject`, then `object.id`), the examination material as a string or object `data` (a `material` field is mapped to `data`), plus `provenance.source`, `provenance.evidence` and an authority `warrant` as applicable. A bare JSON string body is treated as the claim. With no `data` string, the claim itself is the examined material (a recorded fallback). `requested_operation` is taken as given; the gate keeps no fixed list and defaults to `INFORM`. A request with no readable proposition is refused `400 NOT_EXAMINABLE` before any payment movement, naming the missing objects. An unpaid request returns HTTP 402 with x402 v2 payment terms (mirrored in the `payment-required` response header).
+3. Keep the exact request bytes unchanged on retry; the payment authorization and the delivery record are bound to the request.
 
 ## Payment boundaries
 
-- Scheme `WHP-BASE-USDC-FLAT-1`: exactly 1.00 USDC (`amount_units` 1000000, 6 decimals) on Base (`eip155:8453`). This scheme is not x402-exact and is not represented as x402.
-- The caller authorizes and sends the on-chain transfer itself; the service never holds keys, signs transfers or pays. Each transaction hash is single-use.
-- Retry the identical body with headers `X-WHP-Quote` and `X-WHP-Payment-Tx` after the transfer reaches the minimum confirmations in the contract.
-- An unpaid quote expires on its own and consumes nothing.
+- Scheme x402 v2 `exact`: exactly 1.00 USDC (`amount` 1000000, 6 decimals) on Base (`eip155:8453`) to the published `pay_to`.
+- The caller signs an EIP-3009 `transferWithAuthorization`; the facilitator submits the transaction, so no customer ETH gas is required. The service never holds keys or initiates transfers. A signed authorization settles at most once.
+- Retry the identical body with the x402 v2 envelope in the `payment-signature` (or `x-payment`) header: `{"x402Version": 2, "accepted": <the accepts entry from the 402 terms>, "payload": {"signature": "0x...", "authorization": {"from","to","value","validAfter","validBefore","nonce"}}}` (raw JSON, Base64 JSON or Base64URL JSON).
+- A replayed authorization returns the delivered result; a settled but undelivered purchase is re-delivered from its stored record. No retry can double-charge.
 
 ## Response interpretation
 

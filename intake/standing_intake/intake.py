@@ -17,9 +17,11 @@ contradictions and alternatives are preserved, not resolved; deterministic rules
 import json, hashlib, re
 from dataclasses import dataclass
 
-INTAKE_VERSION = "WHP-INTAKE-1.0.0"
+INTAKE_VERSION = "WHP-INTAKE-1.2.0"
 MAX_BYTES, MAX_DEPTH = 262144, 64
-OPS = ("DESCRIBE", "INFORM", "INQUIRE", "WARN", "RECOMMEND", "EXECUTE")
+# WHP-INTAKE-1.2.0 (2026-11-20, operator-approved): the gate keeps no fixed operation list.
+# Any operation name is taken as given; the gate may refuse a missing object or a non-string
+# operation, never an operation outside a predetermined container.
 CLAIM_KEYS = ("claim", "proposition", "statement", "question", "assertion")
 MATERIAL_KEYS = ("data", "material", "text", "document", "content", "body", "evidence", "record", "payload", "transaction", "event", "prompt", "input")
 SOURCE_KEYS = ("source", "source_url", "url", "provenance")
@@ -89,6 +91,12 @@ def _from_json(r, obj):
     if isinstance(obj, list):  # evidence package: list of items
         r.interp("submission is an evidence package (list)", "", "R-PKG-LIST")
         obj = {"items": obj}
+    if isinstance(obj, str):
+        if not obj.strip(): r.issue("EMPTY_SUBMISSION", "top-level JSON string is empty"); return
+        r.claim = obj
+        r.canonical_trace["claim"] = r.ext("proposition", obj, "/", "R-JSON-TOP-STRING")
+        r.interp("proposition is the top-level JSON string (the documented bare-string shape)", "/", "R-JSON-TOP-STRING")
+        return
     if not isinstance(obj, dict):
         r.issue("UNSUPPORTED_SHAPE", "top-level JSON is a scalar"); return
     if obj.get("version") == "WHP-STANDING-SUBMISSION-v1" and isinstance(obj.get("nodes"), list) and obj["nodes"]:
@@ -129,6 +137,18 @@ def _from_json(r, obj):
                 r.claim = obj[k]; r.fb_key = k; r.canonical_trace["claim"] = r.ext("proposition", r.claim, "/" + k, "R-JSON-PROPOSITION-FALLBACK")
                 r.interp("no claim field; the string in %s is read as the proposition (the examination engine's documented fallback order: data, text, prompt, content, input)" % k, "/" + k, "R-JSON-PROPOSITION-FALLBACK")
                 break
+    if r.claim is None and not r.multi and not r.issues:
+        # Contract precedence (WHP-INPUT-SCHEMA-1.4.0): claim aliases (claim, text, prompt,
+        # content, statement, proposition) beat subject; subject beats object.id.
+        has_alias = any(_is_str(obj.get(k)) for k in ("text", "prompt", "content"))
+        if not has_alias:
+            subj = obj.get("subject"); ob = obj.get("object")
+            if _is_str(subj):
+                r.claim = subj; r.canonical_trace["claim"] = r.ext("proposition", subj, "/subject", "R-JSON-SUBJECT")
+                r.interp("no claim alias string; the subject string is mapped to the proposition", "/subject", "R-JSON-SUBJECT")
+            elif isinstance(ob, dict) and _is_str(ob.get("id")):
+                r.claim = ob["id"]; r.canonical_trace["claim"] = r.ext("proposition", r.claim, "/object/id", "R-JSON-OBJECT-ID")
+                r.interp("no claim alias or subject string; object.id is the proposition", "/object/id", "R-JSON-OBJECT-ID")
     # material
     parts = []
     for k in MATERIAL_KEYS:
@@ -226,7 +246,7 @@ def intake(submission, media_type=None):
     # operation
     op = r.op
     if op is None: op = "INFORM"; r.infer("requested_operation", "INFORM", "caller named none; INFORM is the least consequential default")
-    elif not isinstance(op, str) or op not in OPS: r.issue("UNSUPPORTED_OPERATION", "requested operation %r is not one of %s" % (op, ", ".join(OPS))); op = None
+    elif not isinstance(op, str): r.issue("UNSUPPORTED_OPERATION", "requested operation %r is not a string; operation names are taken as given" % (op,)); op = None
     # missing / examinability
     missing = []
     if not r.claim and len(r.multi) < 2: missing.append("PROPOSITION")

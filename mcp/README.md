@@ -1,6 +1,6 @@
 # Standing Mark MCP adapter
 
-A local stdio adapter for the HTTP examination service operated by Wheeler Hubbell Publishing, Inc. Python 3.9+ is sufficient; no third-party runtime packages, API key or new account are needed to read the contract and issuer key. Paid examinations require a caller-authorized transfer of exactly 1.00 USDC on Base (scheme `WHP-BASE-USDC-FLAT-1`, not x402-exact).
+A local stdio adapter for the HTTP examination service operated by Wheeler Hubbell Publishing, Inc. Python 3.9+ is sufficient; no third-party runtime packages, API key or new account are needed to read the contract and issuer key. Paid examinations use x402 v2 (`exact`): exactly 1.00 USDC on Base, an EIP-3009 `transferWithAuthorization` the caller signs; the facilitator submits the transaction, so no customer ETH gas is required.
 
 ## Install from source
 
@@ -26,9 +26,9 @@ In an MCP client, use the absolute local path after cloning:
 The adapter reads newline-delimited JSON-RPC on stdin and writes responses to stdout. It exposes `standing_contract`, `standing_issuer`, `standing_request_examination` and `standing_verify`.
 
 - `standing_contract` and `standing_issuer` accept `{}` and perform free GETs.
-- `standing_request_examination` accepts the examination request directly: `{"claim": "<the proposition, as a string>", "data": "<the examination material, as a string>", "provenance": {"source": ..., "evidence": [...]}, "warrant": ..., "requested_operation": "INFORM"}`. The accepted input schema is `input_schema` in the live contract: an object-valued `claim` is not a proposition and no field named `material` is read. Without payment headers it requests a quote, not a paid examination. Keep the complete object unchanged on retry.
+- `standing_request_examination` accepts the examination request directly: `{"claim": "<the proposition, as a string>", "data": "<the examination material, as a string>", "provenance": {"source": ..., "evidence": [...]}, "warrant": ..., "requested_operation": "INFORM"}`. The accepted input schema is `input_schema` in the live contract. Without a payment header the answer is the 402 x402 v2 terms, not a paid examination. Keep the complete object unchanged on retry.
 - `standing_verify` accepts `{"result": {"envelope": <signed envelope>, "public_key": "<SPKI DER base64>"}}`. This checks a signature only.
-- Only after the caller has authorized and sent the exact transfer, set `WHP_QUOTE_ID` and `WHP_PAYMENT_TX` for the identical examination retry. The adapter never holds keys, signs transfers or pays.
+- Payment retry: the caller signs the EIP-3009 authorization and supplies the x402 v2 envelope for the identical retry. The adapter never holds keys, signs authorizations or pays. Note: the adapter's retired `WHP_QUOTE_ID`/`WHP_PAYMENT_TX` retry path (scheme `WHP-BASE-USDC-FLAT-1`) is not accepted by the live service; the paid-retry helper is being updated to x402 v2.
 
 Run the free discovery/local-vector check, which never calls `/v1/evaluate`:
 

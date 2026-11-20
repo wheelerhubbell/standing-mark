@@ -30,10 +30,10 @@ This repository holds the public developer assets for the service:
 | Reproducible demonstration | `demo/standing_mark_demo.py` |
 | Submission rejection boundary | `docs/rejection-boundary.md` |
 | Standing Receiving Kit 0.1.1 (receiver, receipt record, exchange protocol, adapters) | `receiver/` |
-| Universal Intake reference implementation, Python and PHP (not used by the live service) | `intake/` |
+| Universal Intake reference implementation, Python and PHP (WHP-INTAKE-1.2.0; the live door runs this intake) | `intake/` |
 
 Payment buys an examination, not a positive finding. Results are signed (type `WHP-STANDING-MARK-v1`, Ed25519, canonicalization `WHP-JCS-I1`) and anyone can verify a signature against the published issuer key. Signature verification establishes cryptographic validity, not the substantive correctness of a claim.
 
-The payment scheme is `WHP-BASE-USDC-FLAT-1`: exactly 1.00 USDC on Base per examination. The quote ID is bound to the SHA-256 of the exact request bytes and each transaction hash is single-use; the amount is fixed, not a quote identifier. It is not x402-exact and is not represented as x402.
+The payment scheme is x402 v2 (`exact`): exactly 1.00 USDC on Base per examination. An unpaid request returns HTTP 402 with the x402 v2 terms (mirrored in the `payment-required` header); the caller signs an EIP-3009 `transferWithAuthorization` to the published `pay_to` address and retries the identical body with the envelope in the `payment-signature` (or `x-payment`) header. The facilitator submits the transaction, so no customer ETH gas is required. A signed authorization settles at most once and a replay returns the delivered result without a second charge.
 
 The A2A card is descriptive only: the service does not implement native A2A transport. The MCP adapter installs from source; no hosted MCP endpoint or published PyPI package is claimed.

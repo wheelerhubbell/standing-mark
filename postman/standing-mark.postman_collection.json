@@ -139,12 +139,8 @@
             "value": "application/json"
           },
           {
-            "key": "X-WHP-Quote",
-            "value": "{{quote_id}}"
-          },
-          {
-            "key": "X-WHP-Payment-Tx",
-            "value": "{{payment_tx}}"
+            "key": "payment-signature",
+            "value": "{{x402_payment_envelope}}"
           }
         ],
         "url": {
