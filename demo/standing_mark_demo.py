@@ -5,16 +5,17 @@ Shows, step by step:
   1. An agent (or its operator) reads the live service contract.
   2. The verifier pins the published issuer key.
   3. An agent submits a proposed action for examination.
-  4. The service answers with a price quote bound to the exact request bytes (402).
-  5. (Prepared, not run without a payment decision) pay the quote on Base and retry
-     with X-WHP-Quote / X-WHP-Payment-Tx to receive the signed examination result.
+  4. The service answers with x402 v2 payment terms (402): 1.00 USDC on Base.
+  5. (Prepared, not run without a payment decision) the operator signs an EIP-3009
+     authorization for those terms and retries with the envelope in the
+     payment-signature header to receive the signed examination result.
   6. An independent verifier checks a signed result: server-side signature check
      (POST /v1/verification) and offline key pinning + Ed25519 verification.
 
 Standard library only for steps 1-5. Step 6 offline signature verification uses the
 'cryptography' package when available. No wallet, no keys, no spending is performed
 by this script unless the operator supplies a real quote id and transaction hash via
-environment variables WHP_QUOTE_ID and WHP_PAYMENT_TX.
+environment variable WHP_PAYMENT_SIGNATURE (an x402 v2 envelope signed by the operator).
 """
 import json, os, sys, hashlib, urllib.request, urllib.error
 
@@ -94,7 +95,7 @@ def main():
     step(1, "Read the live contract")
     contract = get("/v1/contract")
     print("profile:", contract["profile"])
-    print("payment scheme:", contract["payment"]["scheme"], "| not_x402_exact:", contract["payment"]["not_x402_exact"])
+    print("payment scheme:", contract["payment"]["scheme"], "| protocol:", contract["payment"]["protocol"], "| price:", contract["payment"]["price"])
     print("signed type:", contract["signed_type"], "| determinism:", contract["determinism"])
 
     step(2, "Pin the published issuer key")
@@ -109,21 +110,21 @@ def main():
     step(3, "An agent submits a proposed action for examination")
     print(json.dumps(PROPOSED_ACTION, indent=2)[:400], "...")
 
-    step(4, "Unpaid request: the service quotes a price bound to the exact bytes")
+    step(4, "Unpaid request: the service answers with x402 v2 payment terms")
     status, body = post("/v1/evaluate", PROPOSED_ACTION)
     print("HTTP", status, json.dumps(body, indent=2)[:600])
     if status != 402:
         print("unexpected status; contract changed? re-read /v1/contract"); sys.exit(1)
-    quote = body.get("payment_required", {})
-    qid = quote.get("quote_id")
-    print("quote_id:", qid, "| amount_units:", quote.get("amount_units"),
-          "| pay_to:", quote.get("pay_to"), "| expires:", quote.get("expires"))
+    terms = (body.get("accepts") or [{}])[0]
+    print("scheme:", terms.get("scheme"), "| network:", terms.get("network"),
+          "| amount:", terms.get("amount"), "| payTo:", terms.get("payTo"),
+          "| maxTimeoutSeconds:", terms.get("maxTimeoutSeconds"))
 
     step(5, "Payment (prepared; runs only when the operator supplies a real payment)")
-    qid_env, tx_env = os.environ.get("WHP_QUOTE_ID"), os.environ.get("WHP_PAYMENT_TX")
-    if qid_env and tx_env:
+    sig_env = os.environ.get("WHP_PAYMENT_SIGNATURE")
+    if sig_env:
         status, result = post("/v1/evaluate", PROPOSED_ACTION,
-                              {"X-WHP-Quote": qid_env, "X-WHP-Payment-Tx": tx_env})
+                              {"payment-signature": sig_env})
         print("HTTP", status)
         if status == 200:
             with open("signed_result.json", "w") as f: json.dump(result, f, indent=2)
@@ -131,8 +132,8 @@ def main():
         else:
             print(json.dumps(result, indent=2)[:600]); sys.exit(1)
     else:
-        print("skipped: set WHP_QUOTE_ID and WHP_PAYMENT_TX to run the paid step.")
-        print("(The quote above expires on its own; nothing is consumed.)")
+        print("skipped: set WHP_PAYMENT_SIGNATURE (an x402 v2 envelope you signed) to run the paid step.")
+        print("(The terms above carry a timeout; nothing is consumed.)")
 
     step(6, "Independent verification of a signed result")
     path = "signed_result.json"

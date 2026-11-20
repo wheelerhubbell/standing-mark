@@ -28,7 +28,7 @@ The adapter reads newline-delimited JSON-RPC on stdin and writes responses to st
 - `standing_contract` and `standing_issuer` accept `{}` and perform free GETs.
 - `standing_request_examination` accepts the examination request directly: `{"claim": "<the proposition, as a string>", "data": "<the examination material, as a string>", "provenance": {"source": ..., "evidence": [...]}, "warrant": ..., "requested_operation": "INFORM"}`. The accepted input schema is `input_schema` in the live contract. Without a payment header the answer is the 402 x402 v2 terms, not a paid examination. Keep the complete object unchanged on retry.
 - `standing_verify` accepts `{"result": {"envelope": <signed envelope>, "public_key": "<SPKI DER base64>"}}`. This checks a signature only.
-- Payment retry: the caller signs the EIP-3009 authorization and supplies the x402 v2 envelope for the identical retry. The adapter never holds keys, signs authorizations or pays. Note: the adapter's retired `WHP_QUOTE_ID`/`WHP_PAYMENT_TX` retry path (scheme `WHP-BASE-USDC-FLAT-1`) is not accepted by the live service; the paid-retry helper is being updated to x402 v2.
+- Payment retry: the caller signs the EIP-3009 authorization and supplies the x402 v2 envelope for the identical retry. The adapter never holds keys, signs authorizations or pays. For the paid retry the adapter reads `WHP_PAYMENT_SIGNATURE` (the caller-signed x402 v2 envelope) and sends it as the `payment-signature` header; the retired `WHP_QUOTE_ID`/`WHP_PAYMENT_TX` path is removed.
 
 Run the free discovery/local-vector check, which never calls `/v1/evaluate`:
 

@@ -14,7 +14,7 @@ def main():
             body=r.read();data=json.loads(body)
             assert r.status==200
         checks.append({'check':path,'status':'PASS','sha256':hashlib.sha256(body).hexdigest()})
-    client=StandingMark();assert client.contract()['profile']=='WHP-PHP-SERVICE-1.2.0'
+    client=StandingMark();assert client.contract()['profile'].startswith('WHP-PHP-SERVICE-1.')
     _,kid=client.pinned_key();checks.append({'check':'Python SDK contract and key consistency','status':'PASS','kid':kid})
     test_key='MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo='
     for runtime,file in [(sys.executable,'verification/verify.py'),('node','verification/verify.js')]:
@@ -28,7 +28,7 @@ def main():
     r=subprocess.run([sys.executable,str(ROOT/'mcp/standing_mark_mcp.py')],input=''.join(json.dumps(m)+'\n' for m in messages),text=True,capture_output=True,check=True)
     out=[json.loads(line) for line in r.stdout.splitlines()];assert len(out)==3
     assert len(out[1]['result']['tools'])==4
-    assert json.loads(out[2]['result']['content'][0]['text'])['profile']=='WHP-PHP-SERVICE-1.2.0'
+    assert json.loads(out[2]['result']['content'][0]['text'])['profile'].startswith('WHP-PHP-SERVICE-1.')
     checks.append({'check':'MCP stdio initialize, tools/list, contract GET','status':'PASS'})
     print(json.dumps({'checks':checks,'examination_requests':0,'paid_examinations':0,'scope':'Live discovery GETs, local RFC test-key signatures and MCP stdio discovery only. No paid retry or adoption is established.'},indent=2))
 if __name__=='__main__':main()

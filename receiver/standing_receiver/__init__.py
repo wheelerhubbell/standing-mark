@@ -13,6 +13,6 @@ from .evidence import build_evidence, KIT_STATEMENT
 from .receiver import StandingReceiver, SeenStore, ReceptionResult
 from .receipt import build_reception_record, verify_receipt, ReceiptCheck
 from .exchange import object_id, link, verify_chain
-from .client import ExaminationClient, QuoteRequired
+from .client import ExaminationClient, PaymentRequired, QuoteRequired
 
 __version__ = "0.1.1"

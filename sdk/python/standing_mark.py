@@ -1,7 +1,7 @@
 """Standing Mark client SDK (Python, standard library only).
 
 Covers the free surface: read the contract, read and pin the issuer key,
-request an examination quote (402), and check signed results remotely and
+request examination payment terms (x402 v2, 402), and check signed results remotely and
 offline. The paid retry is the caller's decision: this SDK never pays.
 
 Docs: docs/quick-start.md. Live contract is the source of truth:
@@ -11,24 +11,34 @@ import json, hashlib, base64, urllib.request, urllib.error
 
 DEFAULT_BASE = "https://api.wheelerhubbellpublishing.com"
 
-class QuoteRequired(Exception):
-    """An unpaid examination request was answered with a price quote."""
-    def __init__(self, quote, raw):
-        super().__init__("payment required: %s units to %s, quote %s"
-                         % (quote.get("amount_units"), quote.get("pay_to"), quote.get("quote_id")))
-        self.quote = quote
+class PaymentRequired(Exception):
+    """An unpaid examination request was answered with x402 v2 payment terms (HTTP 402).
+
+    .terms is the accepts[0] entry (scheme, network, asset, amount, payTo,
+    maxTimeoutSeconds, extra). The customer signs an EIP-3009 authorization for
+    exactly those terms and retries the identical body with the envelope in the
+    payment-signature header."""
+    def __init__(self, terms, raw):
+        super().__init__("payment required: %s units of %s on %s to %s"
+                         % (terms.get("amount"), terms.get("asset"), terms.get("network"), terms.get("payTo")))
+        self.terms = terms
         self.raw = raw
 
+QuoteRequired = PaymentRequired  # name kept for callers written against earlier releases
+
 def _req(method, base, path, body=None, headers=None):
+    return _req_h(method, base, path, body, headers)[:2]
+
+def _req_h(method, base, path, body=None, headers=None):
     data = json.dumps(body).encode() if body is not None else None
     r = urllib.request.Request(base + path, data=data, method=method,
                                headers={"Content-Type": "application/json", **(headers or {})})
     try:
         with urllib.request.urlopen(r, timeout=30) as resp:
-            return resp.status, json.loads(resp.read().decode())
+            return resp.status, json.loads(resp.read().decode()), dict(resp.headers)
     except urllib.error.HTTPError as e:
-        try: return e.code, json.loads(e.read().decode())
-        except ValueError: return e.code, {"error": "unparsable body"}
+        try: return e.code, json.loads(e.read().decode()), dict(e.headers)
+        except ValueError: return e.code, {"error": "unparsable body"}, dict(e.headers)
 
 class StandingMark:
     def __init__(self, base=DEFAULT_BASE):
@@ -51,16 +61,18 @@ class StandingMark:
             raise ValueError("published key does not pin to published key id")
         return der, kid
 
-    def request_examination(self, claim, quote_id=None, payment_tx=None):
-        """Submit an examination request (dict in the accepted input schema: string "claim" proposition, string "data" material, provenance, warrant; see GET /v1/contract input_schema). Unpaid: raises QuoteRequired
-        with the quote (bound to the exact request bytes). With quote_id and
-        payment_tx after paying the quote on Base: returns the signed result."""
-        headers = {}
-        if quote_id and payment_tx:
-            headers = {"X-WHP-Quote": quote_id, "X-WHP-Payment-Tx": payment_tx}
+    def request_examination(self, claim, payment_signature=None):
+        """Submit an examination request (dict in the accepted input schema: string "claim" proposition, string "data" material, provenance, warrant; see GET /v1/contract input_schema). Unpaid: raises PaymentRequired
+        with the x402 v2 terms (accepts[0]). With payment_signature, the x402 v2
+        envelope string the customer's own signer produced for those terms
+        (raw JSON or Base64 JSON, sent as the payment-signature header),
+        retry the identical body to receive the signed result. This SDK never
+        signs, holds keys or pays."""
+        headers = {"payment-signature": payment_signature} if payment_signature else {}
         status, body = _req("POST", self.base, "/v1/evaluate", claim, headers)
         if status == 402:
-            raise QuoteRequired(body.get("payment_required", {}), body)
+            accepts = body.get("accepts") or [{}]
+            raise PaymentRequired(accepts[0], body)
         if status != 200:
             raise RuntimeError("examination failed: HTTP %s %s" % (status, body))
         return body

@@ -1,18 +1,23 @@
 // Standing Mark client SDK (Node.js 18+, standard library only).
-// Free surface: contract, issuer key pinning, examination quotes, remote and
+// Free surface: contract, issuer key pinning, examination payment terms (x402 v2), remote and
 // offline signature checks. The paid retry is the caller's decision: this
 // SDK never pays. Live contract is the source of truth.
 
 const crypto = require("node:crypto");
 
-const DEFAULT_BASE = "https://decisionintegrity.wheelerhubbellpublishing.com";
+const DEFAULT_BASE = "https://api.wheelerhubbellpublishing.com";
 
-class QuoteRequired extends Error {
-  constructor(quote, raw) {
-    super(`payment required: ${quote.amount_units} units to ${quote.pay_to}, quote ${quote.quote_id}`);
-    this.quote = quote; this.raw = raw;
+// An unpaid request is answered with x402 v2 terms (HTTP 402). `terms` is the
+// accepts[0] entry. The customer signs an EIP-3009 authorization for exactly
+// those terms and retries the identical body with the envelope in the
+// payment-signature header.
+class PaymentRequired extends Error {
+  constructor(terms, raw) {
+    super(`payment required: ${terms.amount} units of ${terms.asset} on ${terms.network} to ${terms.payTo}`);
+    this.terms = terms; this.raw = raw;
   }
 }
+const QuoteRequired = PaymentRequired; // name kept for callers written against earlier releases
 
 function jcsString(s) {
   let out = '"';
@@ -75,10 +80,12 @@ class StandingMark {
   // claim: the complete examination request object in the accepted input schema
   // (string "claim" proposition, string "data" material, provenance, warrant;
   // see GET /v1/contract input_schema). An object-valued "claim" is not a proposition.
-  async requestExamination(claim, { quoteId, paymentTx } = {}) {
-    const headers = (quoteId && paymentTx) ? { "X-WHP-Quote": quoteId, "X-WHP-Payment-Tx": paymentTx } : {};
+  // paymentSignature: the x402 v2 envelope string the customer's own signer produced
+  // for the 402 terms (raw JSON or Base64 JSON). This SDK never signs or pays.
+  async requestExamination(claim, { paymentSignature } = {}) {
+    const headers = paymentSignature ? { "payment-signature": paymentSignature } : {};
     const [status, body] = await req("POST", this.base, "/v1/evaluate", claim, headers);
-    if (status === 402) throw new QuoteRequired(body.payment_required || {}, body);
+    if (status === 402) throw new PaymentRequired((body.accepts || [{}])[0], body);
     if (status !== 200) throw new Error(`examination failed: HTTP ${status} ${JSON.stringify(body)}`);
     return body;
   }
@@ -99,4 +106,4 @@ class StandingMark {
   }
 }
 
-module.exports = { StandingMark, QuoteRequired, jcs, DEFAULT_BASE };
+module.exports = { StandingMark, PaymentRequired, QuoteRequired, jcs, DEFAULT_BASE };

@@ -67,7 +67,7 @@ class FakeTransport:
         self.calls.append((m, url, body, headers)); return self.responses.pop(0)
 
 def test_client_refuses_raw_dict_and_sends_exact_bytes():
-    t = FakeTransport([(402, {"payment_required": {"quote_id": "q1", "amount_units": 1000000}})])
+    t = FakeTransport([(402, {"x402Version": 2, "accepts": [{"scheme": "exact", "network": "eip155:8453", "amount": "1000000"}]})])
     c = ExaminationClient("https://svc.test", t)
     with pytest.raises(TypeError):
         c.submit({"claim": {}, "material": {}})
@@ -75,10 +75,10 @@ def test_client_refuses_raw_dict_and_sends_exact_bytes():
     r = build_request(claim=CLAIM, data=DATA)
     with pytest.raises(QuoteRequired) as e:
         c.submit(r, expected_amount_units=1000000)
-    assert t.calls[0][2] == r.body_bytes and e.value.quote["quote_id"] == "q1"
+    assert t.calls[0][2] == r.body_bytes and e.value.terms["amount"] == "1000000"
 
 def test_client_refuses_unexpected_quote_amount():
-    t = FakeTransport([(402, {"payment_required": {"quote_id": "q1", "amount_units": 2000000}})])
+    t = FakeTransport([(402, {"x402Version": 2, "accepts": [{"scheme": "exact", "network": "eip155:8453", "amount": "2000000"}]})])
     with pytest.raises(RuntimeError):
         ExaminationClient("https://svc.test", t).submit(build_request(claim=CLAIM, data=DATA), expected_amount_units=1000000)
 
