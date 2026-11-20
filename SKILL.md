@@ -9,10 +9,10 @@ Standing Mark is an independent examination service operated by Wheeler Hubbell 
 
 ## Discovery (free)
 
-- Live contract, the source of truth for schemas, payment terms and limits: `GET https://decisionintegrity.wheelerhubbellpublishing.com/v1/contract`
-- Issuer Ed25519 public key: `GET https://decisionintegrity.wheelerhubbellpublishing.com/.well-known/whp-issuer.json`
-- OpenAPI 3.1: `https://decisionintegrity.wheelerhubbellpublishing.com/openapi.json`
-- Machine-readable discovery: `GET https://decisionintegrity.wheelerhubbellpublishing.com/.well-known/whp-standing.json`
+- Live contract, the source of truth for schemas, payment terms and limits: `GET https://api.wheelerhubbellpublishing.com/v1/contract`
+- Issuer Ed25519 public key: `GET https://api.wheelerhubbellpublishing.com/.well-known/whp-issuer.json`
+- OpenAPI 3.1: `https://api.wheelerhubbellpublishing.com/openapi.json`
+- Machine-readable discovery: `GET https://api.wheelerhubbellpublishing.com/.well-known/whp-standing.json`
 - Free reproducible check (never requests a quote): clone this repository and run `python3 scripts/check_discovery.py`
 
 ## Invocation

@@ -172,6 +172,37 @@ def test_document_with_labels_in_mixed_case_and_crlf():
     assert lvl(r) == "EXAMINABLE" or lvl(r) == "NOT_EXAMINABLE"   # CRLF handled below
 
 
+# ---- conflicting proposition aliases are refused, never sorted (WHP-INTAKE-1.3.0) ----
+def test_conflicting_alias_values_are_refused_not_sorted_into_roles():
+    r = intake({"claim": C, "text": "A different proposition.", "data": "x"})
+    assert lvl(r) == "NOT_EXAMINABLE" and canon(r) == []
+    codes = [i["code"] for i in r["examinability"]["issues"]]
+    assert codes == ["AMBIGUOUS_INPUT_ALIASES"] and r["examinability"]["quote_gate"] == "NO_QUOTE"
+    assert "/claim" in r["examinability"]["issues"][0]["detail"] and "/text" in r["examinability"]["issues"][0]["detail"]
+
+@pytest.mark.parametrize("payload", [
+  {"claim": C, "statement": "Other.", "data": "x"},
+  {"prompt": "p1", "content": "c1", "data": "x"},
+  {"claim": C, "text": "t", "prompt": "p"},
+  {"text": "t", "proposition": C},
+])
+def test_every_distinct_alias_conflict_is_refused(payload):
+    r = intake(payload)
+    assert lvl(r) == "NOT_EXAMINABLE" and canon(r) == []
+    assert [i["code"] for i in r["examinability"]["issues"]] == ["AMBIGUOUS_INPUT_ALIASES"]
+
+def test_identical_alias_values_are_accepted():
+    r = intake({"claim": C, "text": C, "statement": C, "data": "d"})
+    assert "AMBIGUOUS_INPUT_ALIASES" not in [i["code"] for i in r["examinability"]["issues"]]
+    assert canon(r)[0]["claim"] == C
+
+def test_question_key_is_not_a_refusal_alias():
+    # question/assertion stay claim keys whose distinct values are preserved as alternatives,
+    # matching the live door's alias set (claim, text, prompt, content, statement, proposition)
+    r = intake({"claim": C, "question": "Is it?", "data": "x"})
+    assert "AMBIGUOUS_INPUT_ALIASES" not in [i["code"] for i in r["examinability"]["issues"]]
+    assert canon(r)[0]["claim"] == C and r["preserved"]["alternatives"][0]["text"] == "Is it?"
+
 # ---- engine-accepted shapes (fallback fields, data-only, native submission) ----
 @pytest.mark.parametrize("key", ["data", "text", "prompt", "content", "input"])
 def test_flat_fallback_fields_are_read_as_the_proposition_with_limits(key):
@@ -180,9 +211,12 @@ def test_flat_fallback_fields_are_read_as_the_proposition_with_limits(key):
     assert canon(r)[0]["claim"] == "The invoice is payable." and "data" not in canon(r)[0]
     assert r["interpreted"][0]["rule"] == "R-JSON-PROPOSITION-FALLBACK"
 
-def test_claim_field_wins_over_fallback_fields_and_they_stay_material():
-    b = canon(intake({"claim": C, "text": "t", "prompt": "p"}))[0]
-    assert b["claim"] == C and "t" in b["data"] and "p" in b["data"]
+def test_claim_field_winning_over_fallback_fields_is_now_refused_as_a_conflict():
+    # WHP-INTAKE-1.3.0: this input previously sorted silently (claim won, text/prompt became
+    # material). It is now refused: distinct values across the alias fields are a caller error.
+    r = intake({"claim": C, "text": "t", "prompt": "p"})
+    assert lvl(r) == "NOT_EXAMINABLE" and canon(r) == []
+    assert [i["code"] for i in r["examinability"]["issues"]] == ["AMBIGUOUS_INPUT_ALIASES"]
 
 def test_fallback_does_not_mask_a_non_text_claim():
     assert lvl(intake({"claim": 5, "text": "t"})) == "NOT_EXAMINABLE"

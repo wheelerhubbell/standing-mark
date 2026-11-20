@@ -17,12 +17,19 @@ contradictions and alternatives are preserved, not resolved; deterministic rules
 import json, hashlib, re
 from dataclasses import dataclass
 
-INTAKE_VERSION = "WHP-INTAKE-1.2.0"
+INTAKE_VERSION = "WHP-INTAKE-1.3.0"
 MAX_BYTES, MAX_DEPTH = 262144, 64
 # WHP-INTAKE-1.2.0 (2026-11-20, operator-approved): the gate keeps no fixed operation list.
 # Any operation name is taken as given; the gate may refuse a missing object or a non-string
 # operation, never an operation outside a predetermined container.
+# WHP-INTAKE-1.3.0 (2026-11-20, operator-approved): distinct conflicting values across the
+# proposition alias fields are refused, never silently sorted into roles. The door refuses
+# before payment with 400 AMBIGUOUS_INPUT_ALIASES; the intake records NOT_EXAMINABLE.
 CLAIM_KEYS = ("claim", "proposition", "statement", "question", "assertion")
+# The published input schema's proposition aliases (WHP-INPUT-SCHEMA-1.4.x): distinct values
+# across these fields are a caller error. question/assertion are not refusal aliases; a
+# distinct value there is preserved as an alternative, matching the live door's alias set.
+PROPOSITION_ALIAS_KEYS = ("claim", "text", "prompt", "content", "statement", "proposition")
 MATERIAL_KEYS = ("data", "material", "text", "document", "content", "body", "evidence", "record", "payload", "transaction", "event", "prompt", "input")
 SOURCE_KEYS = ("source", "source_url", "url", "provenance")
 STANDING_ASSERTIONS = {"established_fact", "established", "source_grade", "epistemic_status", "attested", "attestation", "signature",
@@ -106,6 +113,12 @@ def _from_json(r, obj):
     for k in obj:
         if k.lower() in STANDING_ASSERTIONS:
             r.source["caller_fields"][k] = obj[k]; r.ignored.append({"field": k, "reason": "caller assertion of standing; recorded, never evidence"})
+    # proposition alias conflict: refused, never sorted into roles (R-JSON-ALIAS-CONFLICT-REFUSED)
+    alias_vals = [(k, obj[k].strip()) for k in PROPOSITION_ALIAS_KEYS if _is_str(obj.get(k))]
+    if len({v for _, v in alias_vals}) > 1:
+        r.issue("AMBIGUOUS_INPUT_ALIASES", "distinct conflicting values across proposition alias fields (%s); supply one proposition field or make every alias carry the same value" % ", ".join("/" + k for k, _ in alias_vals))
+        r.interp("conflicting proposition aliases refused; no value is assigned a role", "", "R-JSON-ALIAS-CONFLICT-REFUSED")
+        return
     # proposition(s)
     cand = [(k, obj[k]) for k in CLAIM_KEYS if k in obj]
     for k, v in cand:

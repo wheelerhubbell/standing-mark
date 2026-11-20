@@ -1,6 +1,6 @@
 <?php
 /**
- * Universal Intake and Interpretation Layer, WHP-INTAKE-1.2.0 (PHP port of standing_intake/intake.py).
+ * Universal Intake and Interpretation Layer, WHP-INTAKE-1.3.0 (PHP port of standing_intake/intake.py).
  *
  * Additive and deterministic. Never calls the examination engine and never changes it.
  * Not wired to anything by this file: the caller decides, behind a default-OFF flag.
@@ -136,13 +136,20 @@ final class DiIuRec {
 }
 
 final class DiIntakeUniversal {
-    public const VERSION = 'WHP-INTAKE-1.2.0';
+    public const VERSION = 'WHP-INTAKE-1.3.0';
     public const MAX_BYTES = 262144;
     public const MAX_DEPTH = 64;
     // WHP-INTAKE-1.2.0 (2026-11-20, operator-approved): the gate keeps no fixed operation list.
     // Any operation name is taken as given; the gate may refuse a missing object or a non-string
     // operation, never an operation outside a predetermined container.
+    // WHP-INTAKE-1.3.0 (2026-11-20, operator-approved): distinct conflicting values across the
+    // proposition alias fields are refused, never silently sorted into roles. The door refuses
+    // before payment with 400 AMBIGUOUS_INPUT_ALIASES; the intake records NOT_EXAMINABLE.
     private const CLAIM_KEYS = ['claim', 'proposition', 'statement', 'question', 'assertion'];
+    // The published input schema's proposition aliases (WHP-INPUT-SCHEMA-1.4.x): distinct values
+    // across these fields are a caller error. question/assertion are not refusal aliases; a
+    // distinct value there is preserved as an alternative, matching the live door's alias set.
+    private const PROPOSITION_ALIAS_KEYS = ['claim', 'text', 'prompt', 'content', 'statement', 'proposition'];
     private const MATERIAL_KEYS = ['data', 'material', 'text', 'document', 'content', 'body', 'evidence', 'record', 'payload', 'transaction', 'event', 'prompt', 'input'];
     private const STANDING = ['established_fact', 'established', 'source_grade', 'epistemic_status', 'attested', 'attestation', 'signature',
         'verified', 'authorized', 'approved', 'standing', 'outcome', 'determination', 'permitted_operations', 'trusted'];
@@ -300,6 +307,20 @@ final class DiIntakeUniversal {
                 $r->source['caller_fields']->set($k, $obj->get($k));
                 $r->ignored[] = ['field' => $k, 'reason' => 'caller assertion of standing; recorded, never evidence'];
             }
+        }
+        // proposition alias conflict: refused, never sorted into roles (R-JSON-ALIAS-CONFLICT-REFUSED)
+        $aliasVals = [];
+        foreach (self::PROPOSITION_ALIAS_KEYS as $k) {
+            if (!$obj->has($k)) { continue; }
+            $v = $obj->get($k);
+            if (self::isStr($v)) { $aliasVals[] = [$k, trim($v)]; }
+        }
+        $distinctVals = [];
+        foreach ($aliasVals as [$ak, $av]) { $distinctVals[$av] = true; }
+        if (count($distinctVals) > 1) {
+            $r->issue('AMBIGUOUS_INPUT_ALIASES', 'distinct conflicting values across proposition alias fields (' . implode(', ', array_map(fn($p) => '/' . $p[0], $aliasVals)) . '); supply one proposition field or make every alias carry the same value');
+            $r->interp('conflicting proposition aliases refused; no value is assigned a role', '', 'R-JSON-ALIAS-CONFLICT-REFUSED');
+            return;
         }
         foreach (self::CLAIM_KEYS as $k) {
             if (!$obj->has($k)) { continue; }

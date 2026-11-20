@@ -30,6 +30,8 @@ Never done: inventing a proposition; choosing a candidate proposition (candidate
 
 Contradictions (same field name, different values across submitted items) and alternative proposition fields are preserved and disclosed. Several explicit propositions become several separate examinations.
 
+One ambiguity class is refused, not preserved: distinct conflicting values across the proposition alias fields (`claim`, `text`, `prompt`, `content`, `statement`, `proposition`). Since WHP-INTAKE-1.3.0 (2026-11-20, operator-approved) the intake issues `AMBIGUOUS_INPUT_ALIASES`, records the submission NOT_EXAMINABLE and emits no canonical submission (rule R-JSON-ALIAS-CONFLICT-REFUSED); the live door refuses before any payment movement with 400 AMBIGUOUS_INPUT_ALIASES. Identical values across aliases are accepted. `question` and `assertion` are not refusal aliases; a distinct value there is preserved as an alternative, matching the live door's alias set.
+
 ## 5. Examinability and the payment gate
 
 | Level | Meaning | Quote gate |

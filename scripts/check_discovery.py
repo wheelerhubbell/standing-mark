@@ -3,7 +3,7 @@
 import base64,hashlib,json,subprocess,sys,urllib.request,shutil,importlib.util
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-BASE='https://decisionintegrity.wheelerhubbellpublishing.com'
+BASE='https://api.wheelerhubbellpublishing.com'
 sys.path.insert(0,str(ROOT/'sdk/python'))
 from standing_mark import StandingMark
 

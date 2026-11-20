@@ -18,7 +18,7 @@ environment variables WHP_QUOTE_ID and WHP_PAYMENT_TX.
 """
 import json, os, sys, hashlib, urllib.request, urllib.error
 
-BASE = "https://decisionintegrity.wheelerhubbellpublishing.com"
+BASE = "https://api.wheelerhubbellpublishing.com"
 
 # The accepted input schema (live contract, GET /v1/contract, field input_schema):
 # the proposition is a string "claim" and the examination material is a string "data".

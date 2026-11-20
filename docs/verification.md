@@ -15,7 +15,7 @@ node verification/verify.js signed_result.json
 
 By default, each independent verifier fetches the public issuer document over HTTPS, recomputes SHA-256 of the DER key and compares it with `key_id_sha256`, checks the protected header, re-canonicalizes the protected object and payload, then verifies Ed25519 directly over those bytes. The signature calculation is local, although default key discovery uses the network. For fully offline verification, provide the expected SPKI DER base64 key as the second argument from a separately trusted key record.
 
-The current key is published at https://decisionintegrity.wheelerhubbellpublishing.com/.well-known/whp-issuer.json . Fetching a key and its hash together establishes consistency, not an independent identity binding. Receivers should record and approve the expected key through their own trust process and define rotation/revocation handling. The issuer document currently provides no separate revocation URL.
+The current key is published at https://api.wheelerhubbellpublishing.com/.well-known/whp-issuer.json . Fetching a key and its hash together establishes consistency, not an independent identity binding. Receivers should record and approve the expected key through their own trust process and define rotation/revocation handling. The issuer document currently provides no separate revocation URL.
 
 ## Free reproducible test, no examination purchase
 

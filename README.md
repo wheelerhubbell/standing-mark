@@ -2,9 +2,9 @@
 
 Standing Mark is an independent examination service operated by Wheeler Hubbell Publishing, Inc. It examines claims and proposed actions and returns a signed result stating what is established and what is not. It does not execute, authorize, pay or settle.
 
-[Company website](https://wheelerhubbellpublishing.com) | [Developer onboarding](https://wheelerhubbellpublishing.com/developers.html) | [Live OpenAPI](https://decisionintegrity.wheelerhubbellpublishing.com/openapi.json) | [Quick-start](docs/quick-start.md) | [Independent verification](docs/verification.md)
+[Company website](https://wheelerhubbellpublishing.com) | [Developer onboarding](https://wheelerhubbellpublishing.com/developers.html) | [Live OpenAPI](https://api.wheelerhubbellpublishing.com/openapi.json) | [Quick-start](docs/quick-start.md) | [Independent verification](docs/verification.md)
 
-Live service: https://decisionintegrity.wheelerhubbellpublishing.com
+Live service: https://api.wheelerhubbellpublishing.com (canonical door; https://decisionintegrity.wheelerhubbellpublishing.com remains operational as an alias of the same deployment)
 
 Start with the quick-start, install a source SDK or the [local MCP adapter](mcp/README.md), and run `python3 scripts/check_discovery.py`. That free check never requests an examination quote. The [evidence loop](docs/propagation-loop.md) explains how to retain a result and reuse a permitted integration example.
 
@@ -30,7 +30,7 @@ This repository holds the public developer assets for the service:
 | Reproducible demonstration | `demo/standing_mark_demo.py` |
 | Submission rejection boundary | `docs/rejection-boundary.md` |
 | Standing Receiving Kit 0.1.1 (receiver, receipt record, exchange protocol, adapters) | `receiver/` |
-| Universal Intake reference implementation, Python and PHP (WHP-INTAKE-1.2.0; the live door runs this intake) | `intake/` |
+| Universal Intake reference implementation, Python and PHP (WHP-INTAKE-1.3.0; the live door runs this intake) | `intake/` |
 
 Payment buys an examination, not a positive finding. Results are signed (type `WHP-STANDING-MARK-v1`, Ed25519, canonicalization `WHP-JCS-I1`) and anyone can verify a signature against the published issuer key. Signature verification establishes cryptographic validity, not the substantive correctness of a claim.
 

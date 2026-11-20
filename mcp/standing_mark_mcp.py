@@ -2,7 +2,7 @@
 # standing_mark_mcp.py - MCP stdio adapter for Standing Mark. Stdlib only.
 import json, os, sys, urllib.request, urllib.error
 
-BASE = os.environ.get("WHP_BASE", "https://decisionintegrity.wheelerhubbellpublishing.com")
+BASE = os.environ.get("WHP_BASE", "https://api.wheelerhubbellpublishing.com")
 
 TOOLS = [
   {"name": "standing_contract", "description": "Read the live Standing Mark contract: routes, payment terms, limits.",

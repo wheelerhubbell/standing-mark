@@ -19,7 +19,7 @@ Requires: Python 3.9+ and the 'cryptography' package.
 """
 import sys, json, hashlib, base64, urllib.request
 
-ISSUER_URL = "https://decisionintegrity.wheelerhubbellpublishing.com/.well-known/whp-issuer.json"
+ISSUER_URL = "https://api.wheelerhubbellpublishing.com/.well-known/whp-issuer.json"
 
 def utf16_order(s):
     return s.encode("utf-16-be")

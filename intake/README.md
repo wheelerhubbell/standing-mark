@@ -8,7 +8,7 @@ A deterministic layer that sits upstream of the examination engine. It takes a s
 |---|---|
 | Python reference implementation (`standing_intake/`) | published, tested (`cd intake && python -m pytest`) |
 | PHP reference port (`php/src/DiIntakeUniversal.php`) | published; byte-for-byte parity with the Python reference on the fixtures in `php/tests` (`php php/tests/parity_test.php`) |
-| Live service | The live service does not use this layer. Published here as a specification and reference code. Check `GET /v1/contract` for what the service accepts. |
+| Live service | The live door runs this layer (WHP-INTAKE-1.3.0 since 2026-11-20): distinct conflicting values across the proposition alias fields are refused with 400 AMBIGUOUS_INPUT_ALIASES before any payment movement. Check `GET /v1/contract` for what the service accepts. |
 
 ## Use
 

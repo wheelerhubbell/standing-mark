@@ -7,7 +7,7 @@ transport; nothing here runs against the live service unless a caller points it 
 import json, urllib.request, urllib.error
 from .request import ExaminationRequest
 
-DEFAULT_BASE = "https://decisionintegrity.wheelerhubbellpublishing.com"
+DEFAULT_BASE = "https://api.wheelerhubbellpublishing.com"
 KIT_CLIENT_ID = "standing-receiver-kit/0.1.1"
 
 class QuoteRequired(Exception):

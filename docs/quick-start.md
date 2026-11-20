@@ -1,6 +1,6 @@
 # Standing Mark quick-start and integration guide
 
-Base URL: `https://decisionintegrity.wheelerhubbellpublishing.com`
+Base URL: `https://api.wheelerhubbellpublishing.com`
 
 Everything below is free except the paid examination retry in step 4. The live contract at `GET /v1/contract` is the source of truth; this guide describes it as of November 20, 2026.
 

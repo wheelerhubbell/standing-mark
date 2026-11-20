@@ -5,11 +5,11 @@ request an examination quote (402), and check signed results remotely and
 offline. The paid retry is the caller's decision: this SDK never pays.
 
 Docs: docs/quick-start.md. Live contract is the source of truth:
-https://decisionintegrity.wheelerhubbellpublishing.com/v1/contract
+https://api.wheelerhubbellpublishing.com/v1/contract
 """
 import json, hashlib, base64, urllib.request, urllib.error
 
-DEFAULT_BASE = "https://decisionintegrity.wheelerhubbellpublishing.com"
+DEFAULT_BASE = "https://api.wheelerhubbellpublishing.com"
 
 class QuoteRequired(Exception):
     """An unpaid examination request was answered with a price quote."""
