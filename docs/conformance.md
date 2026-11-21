@@ -1,7 +1,13 @@
 # One-truth conformance: dependency map and propagation rule
 
 Decision Integrity applies recursively to every public representation of the
-system. No update may land in one place and leave another stale: when a source
+system. Machine-readable surfaces (contract, discovery documents, agent card,
+OpenAPI, SKILL.md, llms.txt, registry records, schemas, verifiers, this
+conformance data) are the primary representation; human prose (press, guides,
+how-to pages, spoken descriptions) is derived from them. When prose and a
+machine surface disagree, the machine surface under the live contract governs
+and the prose is corrected to match. No update may land in one place and
+leave another stale: when a source
 of truth changes, every dependent surface changes with it, and
 `scripts/check_conformance.py` (read-only, GETs only) proves they did.
 
