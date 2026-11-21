@@ -34,6 +34,9 @@ jobs:
       - name: Adversarial gate tests (offline fixtures)
         run: python3 tests/run_adversarial_tests.py
 
+      - name: Enforcement audit tests (offline fixtures)
+        run: python3 tests/run_enforcement_audit_tests.py
+
       - name: Live conformance examination (release gate)
         env:
           WHP_CONFORMANCE_REPO_REF: ${{ github.event.pull_request.head.sha || github.sha }}

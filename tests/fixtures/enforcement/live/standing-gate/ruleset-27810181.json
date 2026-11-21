@@ -1,0 +1,44 @@
+{
+  "id": 27810181,
+  "name": "Standing Mark release tags are sealed",
+  "target": "tag",
+  "source_type": "Repository",
+  "source": "wheelerhubbell/standing-gate",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "exclude": [
+
+      ],
+      "include": [
+        "refs/tags/v*"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "type": "creation"
+    },
+    {
+      "type": "update"
+    },
+    {
+      "type": "deletion"
+    }
+  ],
+  "node_id": "RRS_lACqUmVwb3NpdG9yec5ULLqNzgGoWYU",
+  "created_at": "2026-11-21T15:59:00.882-05:00",
+  "updated_at": "2026-11-21T15:59:00.908-05:00",
+  "bypass_actors": [
+
+  ],
+  "current_user_can_bypass": "never",
+  "_links": {
+    "self": {
+      "href": "https://api.github.com/repos/wheelerhubbell/standing-gate/rulesets/27810181"
+    },
+    "html": {
+      "href": "https://github.com/wheelerhubbell/standing-gate/rules/27810181"
+    }
+  }
+}
