@@ -43,9 +43,9 @@ The Standard defines the examination. The Standing Mark service operates the exa
 
 ## Independent verification
 
-- Online signature check: `POST /v1/verification` with the signed envelope and public key (signature only; it does not authenticate the key or establish object binding).
+- Online signature check: the live contract lists `POST /v1/verification` (signature only; it does not authenticate the key or establish object binding), but that route is not currently deployed (it returns 404, observed 2026-11-21). Use the offline verifier until the contract and the route agree.
 - Offline: `python3 verification/verify.py <envelope.json> <SPKI DER base64>` or `node verification/verify.js` with the same arguments, using the published issuer key. A free public test vector is at `verification/sample-test-key-envelope.json`.
-- Source SDKs for Python and Node live in `sdk/`; a local stdio MCP adapter lives in `mcp/`. There is no hosted MCP endpoint and no published PyPI or npm package.
+- Source SDKs for Python and Node live in `sdk/`; a local stdio MCP adapter lives in `mcp/`. There is no hosted MCP endpoint and no published PyPI package. An outdated npm package (`@wheelerhubbell/whp-standing-client`, 0.2.4, published 2026-10-17) predates the November 2026 payment migration and is not compatible with the live service; use the source SDKs here instead.
 
 ## Authority
 

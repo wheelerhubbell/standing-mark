@@ -355,36 +355,47 @@
       },
       "PaymentRequired": {
         "type": "object",
-        "description": "Observed live 402 body shape (2026-11-13).",
+        "description": "Observed live 402 body shape (2026-11-21): x402 v2 payment terms. The same terms are mirrored in the payment-required response header.",
         "properties": {
-          "status": {
+          "x402Version": {
             "type": "integer",
             "enum": [
-              402
+              2
             ]
           },
           "error": {
-            "type": "string",
-            "enum": [
-              "PAYMENT_REQUIRED"
-            ]
-          },
-          "detail": {
             "type": "string"
           },
-          "payment_required": {
-            "$ref": "#/components/schemas/Quote"
+          "resource": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "mimeType": {
+                "type": "string"
+              }
+            }
+          },
+          "accepts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AcceptsEntry"
+            }
           }
         }
       },
-      "Quote": {
+      "AcceptsEntry": {
         "type": "object",
-        "description": "Price quote bound to the exact request bytes. Self-expires (observed lifetime about 15 minutes).",
+        "description": "x402 v2 exact payment terms for one examination: exactly 1.00 USDC on Base (amount 1000000 atomic units, 6 decimals), an EIP-3009 transferWithAuthorization to payTo settled by the facilitator; no customer ETH gas is required.",
         "properties": {
           "scheme": {
             "type": "string",
             "enum": [
-              "WHP-BASE-USDC-FLAT-1"
+              "exact"
             ]
           },
           "network": {
@@ -394,37 +405,25 @@
             ]
           },
           "asset": {
-            "type": "string"
-          },
-          "pay_to": {
-            "type": "string"
-          },
-          "price_floor_units": {
-            "type": "integer"
-          },
-          "decimals": {
-            "type": "integer",
+            "type": "string",
             "enum": [
-              6
+              "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
             ]
           },
-          "min_confirmations": {
+          "amount": {
+            "type": "string",
+            "enum": [
+              "1000000"
+            ]
+          },
+          "payTo": {
+            "type": "string"
+          },
+          "maxTimeoutSeconds": {
             "type": "integer"
           },
-          "how": {
-            "type": "string"
-          },
-          "quote_id": {
-            "type": "string"
-          },
-          "amount_units": {
-            "type": "integer",
-            "description": "Exactly 1000000 USDC atomic units (1.00 USDC, 6 decimals)",
-            "const": 1000000
-          },
-          "expires": {
-            "type": "integer",
-            "description": "Unix epoch seconds"
+          "extra": {
+            "type": "object"
           }
         }
       },

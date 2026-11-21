@@ -14,12 +14,12 @@ Signed results are type `WHP-STANDING-MARK-v1`: Ed25519 over the WHP-JCS-I1 cano
 `verification/sample-test-key-envelope.json` is a signed envelope made with the published RFC 8032 TEST 1 key (key id `06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9`). It is test material, not an issuer statement.
 
 - Offline: `python3 verification/verify.py verification/sample-test-key-envelope.json MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo=` or the same arguments to `node verification/verify.js`. Expected: `Ed25519 signature: VALID`.
-- Server-side: `POST /v1/verification` with `verification/verification-request-example.json`. Expected: HTTP 200, `"valid": true`, `recordSha256` `92f81fa2c020bb904a125bfd38eebfe1f150af373fb3fd38784a1615db89729a`.
+- Server-side: the live contract lists `POST /v1/verification` for a signature-only check. That route is not currently deployed (it returns 404, observed 2026-11-21); use the offline verifier above until the contract and the route agree.
 - Tamper check: change any payload byte; expected: `"valid": false` with `Ed25519 signature verification failed over WHP-JCS-I1 canonical payload`.
 
-## Vector 3 — live quote shape
+## Vector 3 — live 402 terms shape
 
-An unpaid `POST /v1/evaluate` returns HTTP 402 with `error` `PAYMENT_REQUIRED` and `payment_required` carrying `scheme` (`WHP-BASE-USDC-FLAT-1`), `network` (`eip155:8453`), `asset`, `pay_to`, `decimals` (6), `min_confirmations` (5), `quote_id`, `amount_units` (exactly 1000000, i.e. 1.00 USDC) and `expires` (epoch seconds). The amount is fixed, not a quote identifier. Unpaid quotes self-expire.
+An unpaid `POST /v1/evaluate` returns HTTP 402 with an x402 v2 body (observed live 2026-11-21): `x402Version` `2`, `error` `Payment required`, a `resource` object naming the door URL, and `accepts` carrying one entry with `scheme` `exact`, `network` `eip155:8453`, `asset` `0x833589fcd6edb6e08f4c7c32d4f71b54bda02913` (USDC on Base), `amount` `"1000000"` (exactly 1.00 USDC), `payTo` `0x1050eddd8282623b0c263ed6bdbd42370bbc28d3`, `maxTimeoutSeconds` `300` and `extra.assetTransferMethod` `eip3009`. The same terms are mirrored in the `payment-required` response header. The caller signs an EIP-3009 `transferWithAuthorization` for exactly those terms and retries the identical body with the x402 v2 envelope in the `payment-signature` (or `x-payment`) header; the facilitator settles, and no customer ETH gas is required.
 
 ## Reproducing
 

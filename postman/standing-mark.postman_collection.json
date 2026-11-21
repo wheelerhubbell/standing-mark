@@ -153,7 +153,7 @@
             "evaluate"
           ]
         },
-        "description": "After paying the quote on Base, retry the identical body with X-WHP-Quote and X-WHP-Payment-Tx.",
+        "description": "After signing an EIP-3009 transferWithAuthorization for the 402 terms, retry the identical body with the x402 v2 envelope in the payment-signature (or x-payment) header.",
         "body": {
           "mode": "raw",
           "raw": "{\n  \"claim\": {\n    \"type\": \"proposed_action\",\n    \"actor\": \"example-agent\",\n    \"action\": \"identical body to the quoted request\"\n  }\n}"
@@ -161,7 +161,7 @@
       }
     },
     {
-      "name": "Verify a signed result",
+      "name": "Verify a signed result (contract route, NOT currently deployed: 404)",
       "request": {
         "method": "POST",
         "header": [
@@ -180,7 +180,7 @@
             "verification"
           ]
         },
-        "description": "Server-side signature check only (see the contract's scope note).",
+        "description": "The live contract lists POST /v1/verification for a signature-only check, but the route is not currently deployed (returns 404, observed 2026-11-21). Use the offline verifiers in verification/ until the contract and the route agree.",
         "body": {
           "mode": "raw",
           "raw": "{\n  \"envelope\": {\n    \"protected\": {},\n    \"payload\": {},\n    \"signature\": \"base64\"\n  },\n  \"public_key\": \"SPKI DER base64 from /.well-known/whp-issuer.json\"\n}"
