@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "updated": "2026-11-21",
+  "purpose": "Declared enforcement state for every GitHub-reachable controlled channel of Wheeler Hubbell Publishing. Decision Integrity is reflexive: the administrative controls that enforce examination are themselves part of the examined state. scripts/audit_enforcement.py compares the live GitHub administrative surface against this spec and treats any divergence as an unexamined transition. Changes to this file are themselves releases: they pass through the conformance gate on this repo.",
+  "repos": {
+    "wheelerhubbell/standing-mark": {
+      "branch": "main",
+      "required_checks": ["conformance"],
+      "enforce_admins": true,
+      "require_pull_request": true,
+      "allow_force_pushes": false,
+      "allow_deletions": false
+    },
+    "wheelerhubbell/wheelerhubbell.github.io": {
+      "branch": "main",
+      "required_checks": ["conformance"],
+      "enforce_admins": true,
+      "require_pull_request": true,
+      "allow_force_pushes": false,
+      "allow_deletions": false
+    },
+    "wheelerhubbell/standing-gate": {
+      "branch": "main",
+      "required_checks": ["conformance"],
+      "enforce_admins": true,
+      "require_pull_request": true,
+      "allow_force_pushes": false,
+      "allow_deletions": false
+    },
+    "wheelerhubbell/whp-sentinel-template": {
+      "branch": "main",
+      "required_checks": ["conformance"],
+      "enforce_admins": true,
+      "require_pull_request": true,
+      "allow_force_pushes": false,
+      "allow_deletions": false
+    }
+  },
+  "tag_rulesets": {
+    "wheelerhubbell/standing-gate": {
+      "name": "Standing Mark release tags are sealed",
+      "enforcement": "active",
+      "include_refs": ["refs/tags/v*"],
+      "rules": ["creation", "update", "deletion"],
+      "bypass_actors": 0
+    },
+    "wheelerhubbell/wheelerhubbell.github.io": {
+      "name": "Release tags are sealed",
+      "enforcement": "active",
+      "include_refs": ["refs/tags/v*"],
+      "rules": ["creation", "update", "deletion"],
+      "bypass_actors": 0
+    }
+  },
+  "archived_repos": ["wheelerhubbell/WHPStanding"]
+}

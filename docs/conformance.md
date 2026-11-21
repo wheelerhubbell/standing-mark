@@ -96,3 +96,29 @@ Gate rules:
 5. The checker remains read-only. Automated writes (auto-sync, self-healing
    deploys, upload wrappers that roll back) remain a separate proposal
    requiring the operator's specific word.
+
+## Reflexive enforcement surface (added 2026-11-21, foundational directive)
+
+Decision Integrity applies to the mechanisms that enforce Decision Integrity.
+The branch protections, tag rulesets and archived state that make examination
+a necessary condition of release are administrative controls, and a change to
+any of them is itself a consequential transition. `enforcement/spec.json` is
+the examined declaration of that required state; `scripts/audit_enforcement.py`
+(read-only, GETs only) compares the live GitHub administrative surface against
+it and refuses (exit 1) on any divergence. Because the spec lives in this
+gated repo, changing the declared enforcement state is itself a release that
+must pass the examination.
+
+- `tests/run_enforcement_audit_tests.py` proves the audit offline against
+  injected administrative transitions: deleted protection, flipped
+  `enforce_admins`, removed required check, missing or weakened tag ruleset,
+  added bypass actor, enabled force-push, restored archived repo.
+- `.github/workflows/enforcement-audit.yml` re-examines the live surface on a
+  schedule. The live step activates only when an `ENFORCEMENT_AUDIT_TOKEN`
+  secret exists: a fine-grained token with read-only Administration on the
+  audited repos. The owner-powered publish token must not be used for this; a
+  credential that can delete protections cannot audit them.
+- Detection limit: until that read-only token exists, administrative changes
+  through the owner token remain outside continuous examination. The audit
+  also detects after the fact; it cannot prevent an API-level change the way
+  branch protection prevents a push.

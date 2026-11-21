@@ -1,0 +1,50 @@
+name: Reflexive enforcement-surface audit
+
+# Decision Integrity is reflexive: the administrative controls that enforce
+# examination (branch protections, tag rulesets, archived state) are themselves
+# part of the examined state. This workflow re-examines the live GitHub
+# administrative surface against the examined declaration in
+# enforcement/spec.json on a schedule, so an out-of-band administrative change
+# (a deleted protection, a flipped enforce_admins, a new bypass actor) is
+# detected as drift instead of passing silently. The audit is read-only
+# (GETs only) and authorizes nothing by itself; drift fails the run.
+#
+# The live audit needs a fine-grained token with READ-ONLY Administration on
+# the audited repos, stored as the ENFORCEMENT_AUDIT_TOKEN secret. Until that
+# token exists the live step reports itself inactive and exits cleanly; the
+# offline self-tests always run. The owner-powered publish token must NOT be
+# used for this: a credential that can delete protections cannot audit them.
+
+on:
+  schedule:
+    - cron: '41 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Enforcement audit self-tests (offline fixtures)
+        run: python3 tests/run_enforcement_audit_tests.py
+
+      - name: Live enforcement-surface audit
+        env:
+          WHP_ENFORCEMENT_AUDIT_TOKEN: ${{ secrets.ENFORCEMENT_AUDIT_TOKEN }}
+        run: |
+          if [ -z "$WHP_ENFORCEMENT_AUDIT_TOKEN" ]; then
+            echo "ENFORCEMENT_AUDIT_TOKEN not provisioned: live audit inactive."
+            echo "Provisioning needs a fine-grained read-only Administration token (operator decision)."
+            exit 0
+          fi
+          python3 scripts/audit_enforcement.py --live

@@ -1,0 +1,44 @@
+{
+  "id": 27811646,
+  "name": "Release tags are sealed",
+  "target": "tag",
+  "source_type": "Repository",
+  "source": "wheelerhubbell/wheelerhubbell.github.io",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "exclude": [
+
+      ],
+      "include": [
+        "refs/tags/v*"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "type": "creation"
+    },
+    {
+      "type": "update"
+    },
+    {
+      "type": "deletion"
+    }
+  ],
+  "node_id": "RRS_lACqUmVwb3NpdG9yec5TvMqOzgGoXz4",
+  "created_at": "2026-11-21T16:47:33.410-05:00",
+  "updated_at": "2026-11-21T16:47:33.441-05:00",
+  "bypass_actors": [
+
+  ],
+  "current_user_can_bypass": "never",
+  "_links": {
+    "self": {
+      "href": "https://api.github.com/repos/wheelerhubbell/wheelerhubbell.github.io/rulesets/27811646"
+    },
+    "html": {
+      "href": "https://github.com/wheelerhubbell/wheelerhubbell.github.io/rules/27811646"
+    }
+  }
+}
