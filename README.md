@@ -2,12 +2,13 @@
 
 Standing Mark is an independent examination service operated by Wheeler Hubbell Publishing, Inc. It examines claims and proposed actions and returns a signed result stating what is established and what is not. It does not execute, authorize, pay or settle.
 
-[Company website](https://wheelerhubbellpublishing.com) | [Developer onboarding](https://wheelerhubbellpublishing.com/developers.html) | [Live OpenAPI](https://api.wheelerhubbellpublishing.com/openapi.json) | [Quick-start](docs/quick-start.md) | [Independent verification](docs/verification.md)
+[Company website](https://wheelerhubbellpublishing.com) | [Developer onboarding](https://wheelerhubbellpublishing.com/developers.html) | [Live OpenAPI](https://api.wheelerhubbellpublishing.com/openapi.json) | [Quick-start](docs/quick-start.md) | [Independent verification](docs/verification.md) | [Publications](https://wheelerhubbellpublishing.com/publications/)
 
 Live service: https://api.wheelerhubbellpublishing.com (canonical door; https://decisionintegrity.wheelerhubbellpublishing.com remains operational as an alias of the same deployment)
 
 Start with the quick-start, install a source SDK or the [local MCP adapter](mcp/README.md), and run `python3 scripts/check_discovery.py`. That free check never requests an examination quote. The [evidence loop](docs/propagation-loop.md) explains how to retain a result and reuse a permitted integration example.
 
+- Governing publications: [Decision Integrity Standard No. 001 v1.0](https://wheelerhubbellpublishing.com/publications/decision-integrity-standard-no-001-v1-0.html) and [Receiving Boundary Rule No. 001 v1.0](https://wheelerhubbellpublishing.com/publications/receiving-boundary-rule-no-001-v1-0.html). The Standard defines the examination; this service operates it; the Rule lets a receiving institution require it.
 - Live contract (source of truth): `GET /v1/contract`
 - Discovery: `GET /.well-known/whp-standing.json`
 - Issuer key: `GET /.well-known/whp-issuer.json`

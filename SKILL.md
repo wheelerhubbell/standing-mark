@@ -7,6 +7,13 @@ description: Independent paid examination of claims and proposed agent actions, 
 
 Standing Mark is an independent examination service operated by Wheeler Hubbell Publishing, Inc. A caller submits an exact claim or proposed action with its material; the service examines whether the material establishes the claim under stated bounds and returns a signed result. The service does not execute, authorize, pay or settle, and it is not a notary, a truth oracle or a generic evidence validator. Payment buys the examination, not a positive finding: a signed record that names what is not established is a delivered examination.
 
+## Governing publications
+
+- Decision Integrity Standard No. 001, Version 1.0: https://wheelerhubbellpublishing.com/publications/decision-integrity-standard-no-001-v1-0.html
+- Receiving Boundary Rule No. 001, Version 1.0: https://wheelerhubbellpublishing.com/publications/receiving-boundary-rule-no-001-v1-0.html
+
+The Standard defines the examination. The Standing Mark service operates the examination institution. The Receiving Boundary Rule is an adoptable instrument by which an independent receiving institution can require a verified examination before accepting designated consequential propositions; the receiving institution retains its own authority and responsibility.
+
 ## Discovery (free)
 
 - Live contract, the source of truth for schemas, payment terms and limits: `GET https://api.wheelerhubbellpublishing.com/v1/contract`
