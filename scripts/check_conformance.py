@@ -34,14 +34,29 @@ Dependent surfaces (must derive from, and agree with, the SOT):
 
 Exit code 0 when every check passes or is a known open decision; 1 otherwise.
 Known open decisions are printed separately and never silently pass.
+
+Execution modes (all read-only; they change what is read, never what is written):
+  default         advisory: live surfaces; exit 1 only on FAIL, open decisions reported
+  --gate          release gate: an unresolved open decision blocks the release too
+                  (a release is not authorized while a contradiction is unresolved)
+  --repo-ref R    examine standing-mark repo surfaces at ref R (a release candidate)
+                  instead of main
+  --site-root D   examine wheelerhubbellpublishing.com surfaces from a local checkout
+                  rooted at D (a site release candidate) instead of the published site
+  --fixture-dir D offline test mode: every GET is served from files under D
+Env: WHP_CONFORMANCE_GATE=1, WHP_CONFORMANCE_REPO_REF, WHP_CONFORMANCE_SITE_ROOT,
+WHP_CONFORMANCE_FIXTURE_DIR set the same modes.
 """
+import argparse
 import base64
 import hashlib
 import json
+import os
 import re
 import sys
 import urllib.request
 import urllib.error
+from urllib.parse import urlsplit
 
 API = "https://api.wheelerhubbellpublishing.com"
 ALIAS = "https://decisionintegrity.wheelerhubbellpublishing.com"
@@ -51,6 +66,11 @@ RAW_HEADERS = {"Accept": "application/vnd.github.raw"}  # repo HEAD is the truth
 REGISTRY = "https://registry.modelcontextprotocol.io/v0/servers?search=wheelerhubbell"
 NPM = "https://registry.npmjs.org/@wheelerhubbell%2fwhp-standing-client"
 PAYMENT_MIGRATION_DATE = "2026-11-16"
+
+REPO_REF = os.environ.get("WHP_CONFORMANCE_REPO_REF", "main")
+SITE_ROOT = os.environ.get("WHP_CONFORMANCE_SITE_ROOT")
+FIXTURE_DIR = os.environ.get("WHP_CONFORMANCE_FIXTURE_DIR")
+GATE = os.environ.get("WHP_CONFORMANCE_GATE") == "1"
 
 # Decisions that are the operator's to make. Until each is decided, the
 # checker reports it here instead of failing. Remove the entry when decided.
@@ -73,8 +93,40 @@ def record(check_id, surface, sot, ok, evidence):
     return ok
 
 
+def fixture_path(url):
+    """Offline-test mapping: one URL to one file under FIXTURE_DIR.
+
+    The body lives at the mapped path; an optional sibling `<path>.status`
+    holds the HTTP status (default 200 when the body exists, else 404).
+    """
+    p = urlsplit(url)
+    key = p.netloc + p.path + ("?" + p.query if p.query else "")
+    safe = re.sub(r"[^A-Za-z0-9._-]+", "_", key)
+    return os.path.join(FIXTURE_DIR, safe)
+
+
 def get(url, timeout=25, headers=None):
+    if FIXTURE_DIR:
+        fp = fixture_path(url)
+        status = 200
+        sp = fp + ".status"
+        if os.path.exists(sp):
+            with open(sp) as f:
+                status = int(f.read().strip())
+        if os.path.exists(fp):
+            with open(fp, "rb") as f:
+                return status, f.read()
+        return (status if os.path.exists(sp) else 404), b""
+    if SITE_ROOT and url.startswith(SITE):
+        rel = url[len(SITE):].lstrip("/")
+        fp = os.path.join(SITE_ROOT, rel)
+        if os.path.isfile(fp):
+            with open(fp, "rb") as f:
+                return 200, f.read()
+        return 404, b""
     h = {"User-Agent": "whp-conformance-check/1.0"}
+    if "api.github.com" in url and os.environ.get("GITHUB_TOKEN"):
+        h["Authorization"] = "Bearer " + os.environ["GITHUB_TOKEN"]  # CI rate limits only
     if headers:
         h.update(headers)
     req = urllib.request.Request(url, headers=h)
@@ -97,7 +149,26 @@ def get_json(url, headers=None):
         return -2, None
 
 
-def main():
+def main(argv=None):
+    global GATE, REPO_REF, SITE_ROOT, FIXTURE_DIR
+    ap = argparse.ArgumentParser(description="WHP one-truth conformance check (read-only).")
+    ap.add_argument("--gate", action="store_true",
+                    help="release-gate mode: unresolved open decisions block (exit 1)")
+    ap.add_argument("--repo-ref", default=None,
+                    help="examine standing-mark repo surfaces at this ref instead of main")
+    ap.add_argument("--site-root", default=None,
+                    help="examine site surfaces from this local checkout instead of the published site")
+    ap.add_argument("--fixture-dir", default=None,
+                    help="offline test mode: serve every GET from files under this directory")
+    args = ap.parse_args(argv)
+    if args.gate:
+        GATE = True
+    if args.repo_ref:
+        REPO_REF = args.repo_ref
+    if args.site_root:
+        SITE_ROOT = args.site_root
+    if args.fixture_dir:
+        FIXTURE_DIR = args.fixture_dir
     # --- fetch sources of truth ---
     st1, s1 = get_json(f"{API}/v1/contract")
     st2, s2 = get_json(f"{API}/.well-known/whp-issuer.json")
@@ -135,7 +206,7 @@ def main():
         record("D2", f"{ALIAS}{path}", f"SOT {name}", same, f"HTTP {sta}, {'identical' if same else 'DIFFERS'}")
 
     # --- D3: OpenAPI mirrors ---
-    for label, url in (("site", f"{SITE}/openapi.json"), ("standing-mark repo", f"{RAW_SM}/openapi.json?ref=main")):
+    for label, url in (("site", f"{SITE}/openapi.json"), ("standing-mark repo", f"{RAW_SM}/openapi.json?ref={REPO_REF}")):
         sto, body = get(url, headers=RAW_HEADERS if "api.github.com" in url else None)
         same = sto == 200 and body == s3_body
         record("D3", f"{label} openapi.json ({url})", "S3", same,
@@ -177,7 +248,7 @@ def main():
         ("SKILL.md", ["x402"], None),
     ]
     for path, must, _ in doc_checks:
-        stf, fbody = get(f"{RAW_SM}/{path}?ref=main", headers=RAW_HEADERS)
+        stf, fbody = get(f"{RAW_SM}/{path}?ref={REPO_REF}", headers=RAW_HEADERS)
         ft = fbody.decode() if stf == 200 else ""
         missing = [m for m in must if m not in ft]
         # retired scheme may appear only on lines that name it retired
@@ -188,7 +259,7 @@ def main():
     # --- D8: agent cards ---
     profile_ver = (s1.get("profile") or "").rsplit("-", 1)[-1]
     for label, url in (("site agent-card-description.json", f"{SITE}/agent-card-description.json"),
-                       ("standing-mark a2a/agent-card.json", f"{RAW_SM}/a2a/agent-card.json?ref=main")):
+                       ("standing-mark a2a/agent-card.json", f"{RAW_SM}/a2a/agent-card.json?ref={REPO_REF}")):
         sta, card = get_json(url, headers=RAW_HEADERS if "api.github.com" in url else None)
         ver_ok = sta == 200 and card.get("version") == profile_ver
         instr_bad = sta == 200 and re.search(r'"description": "POST /v1/verification', json.dumps(card))
@@ -263,8 +334,11 @@ def finish():
         for k, v in KNOWN_OPEN.items():
             if any(r[0] == k and r[3] == "OPEN" for r in RESULTS):
                 print(f"- {k}: {v}")
-    return 1 if fails else 0
+    if GATE and opens:
+        print(f"\nGATE: release blocked by {opens} unresolved operator decision(s). "
+              "A release is not authorized while a contradiction is unresolved.")
+    return 1 if fails or (GATE and opens) else 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))

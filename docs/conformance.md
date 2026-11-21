@@ -62,3 +62,37 @@ python3 scripts/check_conformance.py
 
 Exit code 0: every check passes or is a declared open decision. Exit code 1:
 at least one dependent surface disagrees with its source of truth.
+
+## Release control (added 2026-11-21, upstream correction)
+
+The checker is the examination a release must consume. Decision Integrity
+governs the decision to release, not only the description of a bad one.
+
+Release paths and their gates:
+
+| Release path | Mechanism | Gate |
+|---|---|---|
+| `wheelerhubbell/standing-mark` (SDKs, docs, SKILL, agent card, OpenAPI mirror) | push to `main` is publication | `.github/workflows/conformance.yml` + branch protection |
+| `wheelerhubbell/wheelerhubbellpublishing.com` (Pages site: discovery mirror, llms.txt, press, developers, spec, publications) | merge to `main` deploys via GitHub Pages | `.github/workflows/conformance.yml` (runs this checker with `--site-root`) + branch protection |
+| Hostinger (`/v1/contract`, well-knowns, openapi on both hosts) | FTPS upload, live immediately | gated indirectly: an unpropagated source-of-truth change turns every repo gate red until dependents catch up; a pre-upload examination wrapper remains a proposal (operator's word) |
+| npm / MCP Registry / GitHub Marketplace / x402scan | manual, third-party | watched by D10 and D13; a stale record blocks every repo release until resolved or declared open |
+
+Gate rules:
+
+1. `--gate` mode is the release mode. It exits 1 on any FAIL **and** on any
+   unresolved known open decision: a release is not authorized while a
+   contradiction is unresolved.
+2. Repo surfaces are examined at the release candidate (`--repo-ref` for this
+   repo, `--site-root` for the site), so a change that resolves a
+   contradiction can pass while one that carries it forward cannot.
+3. Branch protection on `main` in both repos requires the `conformance`
+   check and a pull request, and applies to administrators: no direct push
+   bypasses the examination.
+4. `tests/run_adversarial_tests.py` proves the gate offline against the
+   November 21 failure shapes (dead advertised route, stale SDK, hosted-MCP
+   claim, retired-host registry record, docs/discovery agreeing against
+   runtime, offline-only capability presented as live). The workflow runs it
+   on every release attempt.
+5. The checker remains read-only. Automated writes (auto-sync, self-healing
+   deploys, upload wrappers that roll back) remain a separate proposal
+   requiring the operator's specific word.

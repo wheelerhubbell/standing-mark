@@ -1,0 +1,40 @@
+name: One-truth release gate
+
+# Decision Integrity release control: no change to a public claim-bearing
+# surface of the Standing service is released unless the conformance
+# examination (scripts/check_conformance.py, read-only, GETs only) authorizes
+# the candidate state. Runs in gate mode: an unresolved contradiction or open
+# operator decision blocks the release. Repo surfaces are examined at the
+# candidate commit, so a change that resolves a contradiction can pass while a
+# change that carries one forward cannot. See docs/conformance.md.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '23 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Adversarial gate tests (offline fixtures)
+        run: python3 tests/run_adversarial_tests.py
+
+      - name: Live conformance examination (release gate)
+        env:
+          WHP_CONFORMANCE_REPO_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python3 scripts/check_conformance.py --gate

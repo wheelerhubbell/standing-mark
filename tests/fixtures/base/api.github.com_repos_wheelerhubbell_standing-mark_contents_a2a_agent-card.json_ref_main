@@ -1,0 +1,37 @@
+{
+  "name": "Standing Mark",
+  "description": "Independent examination of claims and proposed agent actions, operated by Wheeler Hubbell Publishing, Inc. Returns signed results (WHP-STANDING-MARK-v1, Ed25519) stating what is established and what is not. Does not execute, authorize, pay or settle.",
+  "url": "https://api.wheelerhubbellpublishing.com",
+  "provider": {
+    "organization": "Wheeler Hubbell Publishing, Inc."
+  },
+  "version": "1.3.2",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "authentication": {
+    "schemes": []
+  },
+  "skills": [
+    {
+      "id": "read-contract",
+      "name": "Read the live contract",
+      "description": "GET /v1/contract: routes, payment terms, determinism rule, signed type, issuer key reference. Free."
+    },
+    {
+      "id": "request-examination",
+      "name": "Request an examination",
+      "description": "POST /v1/evaluate with a claim or proposed action. Unpaid requests return HTTP 402 with x402 v2 payment terms for exactly 1.00 USDC on Base (scheme exact: an EIP-3009 transferWithAuthorization to the pay_to address; the facilitator submits the transaction, so no customer ETH gas is required). Retry the same body with the signed x402 v2 envelope in the payment-signature (or x-payment) header; the service verifies then settles through the facilitator and returns the signed examination result."
+    },
+    {
+      "id": "verify-result",
+      "name": "Verify a signed result",
+      "description": "Independent offline verification against the published issuer key is available in the public developer assets. The contract also lists POST /v1/verification for a signature-only check, but that route is not currently deployed (observed 2026-11-21)."
+    }
+  ],
+  "x-whp-issuer": "https://api.wheelerhubbellpublishing.com/.well-known/whp-issuer.json",
+  "x-whp-openapi": "https://api.wheelerhubbellpublishing.com/openapi.json",
+  "x-note": "This card describes the HTTP interface for A2A-capable agents. The service does not yet speak the A2A protocol natively; this card is an interoperability description, not a native A2A endpoint.",
+  "x-whp-alias": "https://decisionintegrity.wheelerhubbellpublishing.com (same deployment, kept operational as an alias)"
+}

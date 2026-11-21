@@ -1,0 +1,440 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Standing Mark",
+    "version": "1.3.2",
+    "description": "Standing Mark is an independent examination service operated by Wheeler Hubbell Publishing, Inc. It examines claims and proposed actions and returns a signed result stating what is established and what is not. It does not execute, authorize, pay or settle. Governing publications: Decision Integrity Standard No. 001 v1.0 (https://wheelerhubbellpublishing.com/publications/decision-integrity-standard-no-001-v1-0.html) and Receiving Boundary Rule No. 001 v1.0 (https://wheelerhubbellpublishing.com/publications/receiving-boundary-rule-no-001-v1-0.html). The Standard defines the examination; this service operates the examination institution; the Rule is the adoptable instrument by which a receiving institution can require it.",
+    "x-guidance": "GET /v1/contract first; it is the live source of truth for schemas, payment terms and limits, including the accepted input schema (input_schema). POST /v1/evaluate with a JSON body in that input schema: the proposition as a string 'claim' (aliases: text, prompt, content, statement, proposition; a string 'subject' or object.id is mapped when no alias is present), the examination material as a string or object 'data' (a 'material' field is mapped to data), provenance.source, provenance.evidence and an authority warrant as applicable. An unpaid request returns HTTP 402 with x402 v2 payment terms for exactly 1.00 USDC on Base (scheme exact, EIP-3009): sign the transferWithAuthorization to the pay_to address and retry the same body with the envelope in the payment-signature (or x-payment) header. The facilitator verifies and settles; no customer ETH gas is required. Distinct conflicting values across the claim alias fields are refused with 400 AMBIGUOUS_INPUT_ALIASES before any payment movement. A request with no readable proposition is refused with 400 NOT_EXAMINABLE before any payment movement; the response names the missing objects. POST /v1/verification checks a signed result's signature only. The issuer Ed25519 key is published at /.well-known/whp-issuer.json.",
+    "contact": {
+      "email": "desk@wheelerhubbellpublishing.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.wheelerhubbellpublishing.com",
+      "description": "Canonical door"
+    },
+    {
+      "url": "https://decisionintegrity.wheelerhubbellpublishing.com",
+      "description": "Alias of the same deployment"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "health",
+        "summary": "Service status",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Service status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/contract": {
+      "get": {
+        "operationId": "contract",
+        "summary": "Current machine-readable contract: schemas, payment terms and limits",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "The live contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contract"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/.well-known/whp-standing.json": {
+      "get": {
+        "operationId": "discovery",
+        "summary": "Discovery document (same content as /v1/contract)",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Discovery document",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contract"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/.well-known/whp-issuer.json": {
+      "get": {
+        "operationId": "issuer",
+        "summary": "Issuer identity: Ed25519 public key and key id",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Issuer identity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Issuer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/evaluate": {
+      "post": {
+        "operationId": "evaluate",
+        "summary": "Submit a claim or proposed action for examination",
+        "description": "Without a payment header, returns HTTP 402 with x402 v2 payment terms (exactly 1.00 USDC on Base, EIP-3009 to the published pay_to address; the terms are mirrored in the payment-required response header). Sign the authorization and retry the same body with the x402 v2 envelope in the payment-signature (or x-payment) header: the service verifies then settles through the facilitator and returns the signed examination result with a payment-response header. A signed authorization settles at most once and the facilitator /settle is idempotent for an identical body, so a retry cannot double-charge. Payment buys the examination, not a positive finding.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "description": "A JSON string body is treated as the claim."
+                  },
+                  {
+                    "type": "object",
+                    "description": "The examination request in the accepted input schema (authoritative copy: GET /v1/contract, field input_schema). Strict JSON: safe integers only (no floats, no -0, no integers beyond +/-2^53-1), no duplicate keys, well-formed Unicode, at most 64 levels deep and 262144 bytes.",
+                    "properties": {
+                      "claim": {
+                        "type": "string",
+                        "description": "The proposition examined. Aliases text, prompt, content, statement and proposition are read the same way; distinct conflicting values across them are refused with 400 AMBIGUOUS_INPUT_ALIASES. When no 'data' string is supplied, the claim itself is the examined material (explicit recorded fallback). An object-valued claim contributes its first string among text, claim, statement, proposition, id."
+                      },
+                      "subject": {
+                        "type": "string",
+                        "description": "Mapped to the proposition when no claim alias string is present."
+                      },
+                      "data": {
+                        "description": "The examination material read against the proposition: a string (trimmed non-empty) or an object/array."
+                      },
+                      "source": {
+                        "type": "string",
+                        "description": "A retrievable source reference for the material ('provenance.source' is also read)."
+                      },
+                      "provenance": {
+                        "type": "object",
+                        "properties": {
+                          "source": {
+                            "type": "string",
+                            "description": "A retrievable source reference for the material."
+                          },
+                          "authority": {
+                            "type": "string",
+                            "description": "The authority warrant; required for operations crossing the decision boundary (RECOMMEND and above). A top-level 'warrant' string is also read."
+                          },
+                          "evidence": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Verbatim supporting statements."
+                          },
+                          "qualifiers": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Binding qualifiers."
+                          }
+                        }
+                      },
+                      "warrant": {
+                        "type": "string",
+                        "description": "Authority warrant (see provenance.authority)."
+                      },
+                      "requested_operation": {
+                        "type": "string",
+                        "description": "The operation the caller asks the examination to perform. Taken as given; the gate keeps no fixed list. Defaults to INFORM when the caller names none."
+                      },
+                      "bounds": {
+                        "type": "object",
+                        "description": "jurisdiction, scope, valid_from, valid_until."
+                      },
+                      "extraction": {
+                        "type": "object",
+                        "description": "Extraction provenance, e.g. method."
+                      },
+                      "qualifiers": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "unknowns": {
+                        "type": "array",
+                        "description": "Declared unknowns, each may name operations it blocks."
+                      },
+                      "transitions": {
+                        "type": "array",
+                        "description": "Signed attestation transitions."
+                      },
+                      "nodes": {
+                        "type": "array",
+                        "description": "Signed attestation nodes; a complete WHP-STANDING-SUBMISSION-v1 object is also accepted."
+                      },
+                      "prior_record_hash": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "client_reference": {
+                        "type": "string"
+                      },
+                      "version_state": {
+                        "type": "string"
+                      },
+                      "material": {
+                        "description": "String or object; mapped to 'data' when 'data' is absent. The pre-2026-11-13 nested {\"claim\": {...}, \"material\": {...}} shape is accepted through this mapping."
+                      }
+                    }
+                  }
+                ],
+                "description": "The claim or proposed action to examine, with supporting material. Field-level requirements are defined in the live contract at GET /v1/contract (input_schema); the quote is bound to the exact request bytes."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Signed examination result: a Standing Mark (claim established) or a signed record naming what is not established",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignedResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request: not strict JSON, conflicting proposition aliases (AMBIGUOUS_INPUT_ALIASES), no readable proposition (NOT_EXAMINABLE before any payment movement; the missing objects are named), or INVALID_INPUT when a request carrying a payment header still yields no readable proposition."
+          },
+          "402": {
+            "description": "Payment required (x402 v2 terms; the payment-required response header mirrors the body), or a payment failure: PAYMENT_HEADER_INVALID, PAYMENT_TERMS_MISMATCH, PAYMENT_INVALID (facilitator verify), PAYMENT_SETTLEMENT_FAILED (facilitator settle).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequired"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Payment chain temporarily unavailable (CHAIN_UNAVAILABLE); nothing is consumed"
+          },
+          "502": {
+            "description": "SETTLEMENT_OUTCOME_UNKNOWN (settlement outcome not known; reported as unknown, never as settled or failed) or EVALUATION_DELIVERY_FAILED (settled purchase recorded under the payment nonce; retry delivers without a second charge)"
+          }
+        },
+        "x-whp-payment": {
+          "protocol": "x402-v2",
+          "scheme": "exact",
+          "network": "eip155:8453",
+          "asset": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+          "decimals": 6,
+          "price": "1.00 USDC",
+          "amount_units": 1000000,
+          "amount_match": "exact",
+          "pay_to": "0x1050eddd8282623b0c263ed6bdbd42370bbc28d3",
+          "authorization": "EIP-3009 transferWithAuthorization; the facilitator submits the transaction, so no customer ETH gas is required.",
+          "headers": [
+            "payment-signature",
+            "x-payment"
+          ],
+          "facilitator": "https://facilitator.payai.network"
+        },
+        "x-payment-info": {
+          "price": {
+            "mode": "fixed",
+            "currency": "USD",
+            "amount": "1.00"
+          },
+          "protocols": [
+            {
+              "x402": {}
+            }
+          ]
+        }
+      }
+    },
+    "/v1/verification": {
+      "post": {
+        "operationId": "verify",
+        "summary": "Check a signed result's signature",
+        "description": "Signature check only. Per the live contract this route does not authenticate the supplied key or establish object binding; full independent verification uses the published issuer key and the standalone receiver.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "A signed result previously returned by /v1/evaluate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Verification result"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Health": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "service": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "environment": {
+            "type": "string"
+          },
+          "determinism": {
+            "type": "string"
+          }
+        }
+      },
+      "Contract": {
+        "type": "object",
+        "description": "Live contract: profile, routes, payment terms, determinism rule, signed type, issuer key and limits. Read at time of use."
+      },
+      "Issuer": {
+        "type": "object",
+        "properties": {
+          "issuer": {
+            "type": "string"
+          },
+          "legal_actor": {
+            "type": "string"
+          },
+          "algorithm": {
+            "type": "string",
+            "enum": [
+              "Ed25519"
+            ]
+          },
+          "format": {
+            "type": "string"
+          },
+          "public_key": {
+            "type": "string",
+            "description": "SPKI DER, base64"
+          },
+          "key_id_sha256": {
+            "type": "string"
+          }
+        }
+      },
+      "PaymentRequired": {
+        "type": "object",
+        "description": "Observed live 402 body shape (2026-11-21): x402 v2 payment terms. The same terms are mirrored in the payment-required response header.",
+        "properties": {
+          "x402Version": {
+            "type": "integer",
+            "enum": [
+              2
+            ]
+          },
+          "error": {
+            "type": "string"
+          },
+          "resource": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "mimeType": {
+                "type": "string"
+              }
+            }
+          },
+          "accepts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AcceptsEntry"
+            }
+          }
+        }
+      },
+      "AcceptsEntry": {
+        "type": "object",
+        "description": "x402 v2 exact payment terms for one examination: exactly 1.00 USDC on Base (amount 1000000 atomic units, 6 decimals), an EIP-3009 transferWithAuthorization to payTo settled by the facilitator; no customer ETH gas is required.",
+        "properties": {
+          "scheme": {
+            "type": "string",
+            "enum": [
+              "exact"
+            ]
+          },
+          "network": {
+            "type": "string",
+            "enum": [
+              "eip155:8453"
+            ]
+          },
+          "asset": {
+            "type": "string",
+            "enum": [
+              "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
+            ]
+          },
+          "amount": {
+            "type": "string",
+            "enum": [
+              "1000000"
+            ]
+          },
+          "payTo": {
+            "type": "string"
+          },
+          "maxTimeoutSeconds": {
+            "type": "integer"
+          },
+          "extra": {
+            "type": "object"
+          }
+        }
+      },
+      "SignedResult": {
+        "type": "object",
+        "description": "Signed examination result. Type WHP-STANDING-MARK-v1, Ed25519 signature by the published issuer key. Either a Standing Mark (ESTABLISHED) or a signed record naming what is not established."
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Governing publications: Decision Integrity Standard No. 001 v1.0 and Receiving Boundary Rule No. 001 v1.0",
+    "url": "https://wheelerhubbellpublishing.com/publications/"
+  }
+}

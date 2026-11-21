@@ -1,0 +1,39 @@
+# Standing Mark - Wheeler Hubbell Publishing, Inc.
+
+Independent examination of claims and proposed actions. Returns signed findings. Does not execute, authorize, pay or settle.
+
+## Current developer entry points
+
+- Website: https://wheelerhubbellpublishing.com
+- Developer onboarding: https://wheelerhubbellpublishing.com/developers.html
+- Developer assets: https://github.com/wheelerhubbell/standing-mark
+- Quick-start: https://github.com/wheelerhubbell/standing-mark/blob/main/docs/quick-start.md
+- Independent verification: https://github.com/wheelerhubbell/standing-mark/blob/main/docs/verification.md
+- OpenAPI: https://api.wheelerhubbellpublishing.com/openapi.json
+- Contract: https://api.wheelerhubbellpublishing.com/v1/contract
+- Discovery: https://api.wheelerhubbellpublishing.com/.well-known/whp-standing.json
+- Issuer key: https://api.wheelerhubbellpublishing.com/.well-known/whp-issuer.json
+- Health: https://api.wheelerhubbellpublishing.com/health
+- Examination: POST https://api.wheelerhubbellpublishing.com/v1/evaluate
+- Independent verification: offline against the published issuer key (verifiers in the developer repository). The contract also lists a POST /v1/verification signature-check route that is not currently deployed (observed 2026-11-21); until the contract and the route agree, verify offline.
+
+## Governing publications
+
+- Decision Integrity Standard No. 001, Version 1.0: https://wheelerhubbellpublishing.com/publications/decision-integrity-standard-no-001-v1-0.html
+- Receiving Boundary Rule No. 001, Version 1.0: https://wheelerhubbellpublishing.com/publications/receiving-boundary-rule-no-001-v1-0.html
+
+The Standard defines the examination. The Standing Mark service operates the examination institution. The Receiving Boundary Rule is an adoptable instrument by which an independent receiving institution can require a verified examination before accepting designated consequential propositions; the receiving institution retains its own authority and responsibility.
+
+## Payment and protocol boundaries
+
+Payment buys the examination, not a positive finding. Read the live contract for the exact scheme and current terms. The scheme is x402 v2 `exact`: exactly 1.00 USDC on Base per examination; the caller signs an EIP-3009 transferWithAuthorization and retries with the envelope in the payment-signature (or x-payment) header; the facilitator settles and no customer ETH gas is required. The 402 terms are not a paid examination.
+
+The service is HTTP. MCP setup uses local Python stdio source: https://github.com/wheelerhubbell/standing-mark/blob/main/mcp/README.md . No native remote MCP or A2A endpoint is claimed. The A2A card is a descriptive interoperability asset only.
+
+## Verification and receiver responsibility
+
+Verify the issuer key pin, protected header and Ed25519 signature independently with the published Python or JavaScript verifier. Signature verification establishes cryptographic validity, not substantive correctness, current standing or authority to act. A receiving system must compare the result to its own question, object, operation and policy.
+
+## Legacy assets
+
+Old package clients and demonstrations on the publishing site are historical material, not current onboarding. Use the developer repository above. No adoption, external integration or paid use is implied by publication.
