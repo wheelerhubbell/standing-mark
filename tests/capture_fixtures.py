@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """Capture the live surfaces the conformance checker reads into offline fixtures.
 
-Read-only: performs the same unauthenticated GETs as the checker and stores
-each body (plus its HTTP status) under tests/fixtures/base using the checker's
-own fixture_path() mapping, so the adversarial gate tests run offline against a
-known-coherent snapshot. Re-run only to refresh the snapshot deliberately.
+Read-only: performs the same unauthenticated requests as the checker and
+stores each body (plus its HTTP status) under tests/fixtures/base using the
+checker's own fixture_path() mapping, so the adversarial gate tests run
+offline against a known-coherent snapshot. Routes the contract advertises as
+POST are also probed with an empty JSON body and stored under
+<fixture>.POST. Re-run only to refresh the snapshot deliberately.
 """
 import os
 import sys
@@ -72,7 +74,25 @@ def main():
         with open(fp + ".status", "w") as f:
             f.write(str(status))
         print(f"{status} {url}")
-    print(f"captured {len(URLS)} surfaces into {OUTDIR}")
+    # POST probes for contract-advertised POST routes (empty body; refused
+    # before any payment or evaluation, so the probe changes nothing).
+    for url in (f"{cc.API}/v1/evaluate", f"{cc.API}/v1/verification"):
+        req = urllib.request.Request(url, data=b"{}", method="POST", headers={
+            "User-Agent": "whp-conformance-fixture-capture/1.0",
+            "Content-Type": "application/json",
+        })
+        try:
+            with urllib.request.urlopen(req, timeout=25) as r:
+                status, body = r.status, r.read()
+        except urllib.error.HTTPError as e:
+            status, body = e.code, (e.read() if e.fp else b"")
+        fp = cc.fixture_path(url) + ".POST"
+        with open(fp, "wb") as f:
+            f.write(body)
+        with open(fp + ".status", "w") as f:
+            f.write(str(status))
+        print(f"{status} POST {url}")
+    print(f"captured {len(URLS) + 2} surfaces into {OUTDIR}")
 
 
 if __name__ == "__main__":

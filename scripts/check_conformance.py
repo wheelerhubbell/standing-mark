@@ -4,8 +4,10 @@
 Every public statement about the Standing service must agree with the live
 sources of truth at the same time. When any source of truth changes, every
 dependent surface must change with it; this script is the domino detector.
-It performs unauthenticated GETs only: no POSTs, no quotes, no payment, no
-writes. It never changes anything it reads.
+It performs unauthenticated requests only: no quotes, no payment, no writes.
+A route advertised as POST is probed with an empty JSON body, which the
+service refuses before any payment or evaluation; existence probes change
+nothing on the server. It never changes anything it reads.
 
 Sources of truth (SOT), fetched live:
   S1 contract   GET https://api.wheelerhubbellpublishing.com/v1/contract
@@ -24,8 +26,8 @@ Dependent surfaces (must derive from, and agree with, the SOT):
   D5  developers.html         teaches the current payment scheme only
   D6  press page              presents no retired endpoint as live
   D7  standing-mark docs      current scheme only; retired scheme named retired
-  D8  agent cards             version matches S1 profile; no dead-route instruction without a status note
-  D9  contract-advertised     every route S1/S3 advertise returns non-404
+  D8  agent cards             version matches S1 profile
+  D9  contract-advertised     every route S1/S3 advertise returns non-404 on its advertised method
   D10 MCP registry            active records' remotes resolve; no active record points at a retired host
   D11 reception component     S5 resolves; its pinned issuer key == S2 key id
   D12 publications            S1.publications URLs resolve; both hosts serve S5
@@ -75,7 +77,6 @@ GATE = os.environ.get("WHP_CONFORMANCE_GATE") == "1"
 # Decisions that are the operator's to make. Until each is decided, the
 # checker reports it here instead of failing. Remove the entry when decided.
 KNOWN_OPEN = {
-    "D9 route /v1/verification": "contract advertises the route; it returns 404. Operator decision pending: deploy it or remove it from the contract.",
     "D13 npm @wheelerhubbell/whp-standing-client": "latest published package predates the 2026-11-16 payment migration. Operator decision pending: deprecate it or publish a new version.",
 }
 
@@ -105,9 +106,13 @@ def fixture_path(url):
     return os.path.join(FIXTURE_DIR, safe)
 
 
-def get(url, timeout=25, headers=None):
+def get(url, timeout=25, headers=None, method="GET", body=None):
     if FIXTURE_DIR:
         fp = fixture_path(url)
+        if method != "GET":
+            mfp = fp + "." + method
+            if os.path.exists(mfp) or os.path.exists(mfp + ".status"):
+                fp = mfp
         status = 200
         sp = fp + ".status"
         if os.path.exists(sp):
@@ -129,7 +134,10 @@ def get(url, timeout=25, headers=None):
         h["Authorization"] = "Bearer " + os.environ["GITHUB_TOKEN"]  # CI rate limits only
     if headers:
         h.update(headers)
-    req = urllib.request.Request(url, headers=h)
+    if method != "GET":
+        h.setdefault("Content-Type", "application/json")
+    req = urllib.request.Request(url, data=body if method != "GET" else None,
+                                 headers=h, method=method)
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:
             return r.status, r.read()
@@ -147,6 +155,27 @@ def get_json(url, headers=None):
         return st, json.loads(body)
     except Exception:
         return -2, None
+
+
+def advertised_methods(s1):
+    """path -> advertised HTTP method, from the contract's routes object."""
+    m = {}
+    routes_obj = s1.get("routes", s1.get("interface", {})) or {}
+    if isinstance(routes_obj, dict):
+        for spec in routes_obj.values():
+            if isinstance(spec, dict) and isinstance(spec.get("path"), str):
+                m[spec["path"]] = (spec.get("method") or "GET").upper()
+    return m
+
+
+def probe(url, method):
+    """Existence probe that honors the advertised method. A GET on a POST
+    route proves nothing about the route: /v1/evaluate answers GET with 405
+    but /v1/verification answers GET with 404, which was misread on
+    2026-11-21 as the route not existing. Probe what the contract advertises."""
+    if method == "GET":
+        return get(url)
+    return get(url, method=method, body=b"{}")
 
 
 def main(argv=None):
@@ -180,6 +209,7 @@ def main(argv=None):
             record(sid, "source of truth fetch", "-", False, f"HTTP {st}")
             return finish()
     s3 = json.loads(s3_body)
+    amap = advertised_methods(s1)
 
     # --- D14: issuer key integrity (do this first; other checks reuse it) ---
     key_bytes = base64.b64decode(s2["public_key"])
@@ -219,7 +249,7 @@ def main(argv=None):
     urls = re.findall(r"https://api\.wheelerhubbellpublishing\.com[^\s)`]*", llms_t)
     dead = []
     for u in sorted(set(urls)):
-        stu, _ = get(u)
+        stu, _ = probe(u, amap.get(urlsplit(u).path, "GET"))
         if stu == 404:
             dead.append(u)
     record("D4", f"{SITE}/llms.txt", "S1+live routes", stl == 200 and not bad_terms and not dead,
@@ -262,18 +292,18 @@ def main(argv=None):
                        ("standing-mark a2a/agent-card.json", f"{RAW_SM}/a2a/agent-card.json?ref={REPO_REF}")):
         sta, card = get_json(url, headers=RAW_HEADERS if "api.github.com" in url else None)
         ver_ok = sta == 200 and card.get("version") == profile_ver
-        instr_bad = sta == 200 and re.search(r'"description": "POST /v1/verification', json.dumps(card))
-        record("D8", label, "S1 profile", bool(ver_ok and not instr_bad),
-               f"version {card.get('version') if card else '?'} vs {profile_ver}; unannotated dead route: {bool(instr_bad)}")
+        record("D8", label, "S1 profile", bool(ver_ok),
+               f"version {card.get('version') if card else '?'} vs {profile_ver}")
 
-    # --- D9: contract-advertised routes resolve ---
+    # --- D9: contract-advertised routes resolve on their advertised method ---
     paths = set(re.findall(r'"(/[A-Za-z0-9_./-]+)"', json.dumps(s1.get("routes", s1.get("interface", {})))))
     paths |= set(s3.get("paths", {}).keys())
     for pth in sorted(paths):
         if "{" in pth:
             continue
-        stu, _ = get(f"{API}{pth}")
-        record(f"D9 route {pth}", f"advertised route {pth}", "S1/S3", stu != 404, f"GET -> HTTP {stu}")
+        method = amap.get(pth, "GET")
+        stu, _ = probe(f"{API}{pth}", method)
+        record(f"D9 route {pth}", f"advertised route {pth}", "S1/S3", stu != 404, f"{method} -> HTTP {stu}")
 
     # --- D10: MCP registry ---
     strg, reg = get_json(REGISTRY)

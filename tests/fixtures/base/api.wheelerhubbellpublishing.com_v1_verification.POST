@@ -1,0 +1,1 @@
+{"error": "BAD_REQUEST", "message": "Need envelope and public_key (SPKI DER base64)."}

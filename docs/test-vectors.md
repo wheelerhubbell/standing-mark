@@ -14,7 +14,7 @@ Signed results are type `WHP-STANDING-MARK-v1`: Ed25519 over the WHP-JCS-I1 cano
 `verification/sample-test-key-envelope.json` is a signed envelope made with the published RFC 8032 TEST 1 key (key id `06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9`). It is test material, not an issuer statement.
 
 - Offline: `python3 verification/verify.py verification/sample-test-key-envelope.json MCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo=` or the same arguments to `node verification/verify.js`. Expected: `Ed25519 signature: VALID`.
-- Server-side: the live contract lists `POST /v1/verification` for a signature-only check. That route is not currently deployed (it returns 404, observed 2026-11-21); use the offline verifier above until the contract and the route agree.
+- Server-side: `POST /v1/verification` is deployed and signature-only. Verified live 2026-11-21: this envelope with the test key returns `"valid": true`; one changed payload byte returns `"valid": false` with `Ed25519 signature verification failed over WHP-JCS-I1 canonical payload`. The offline verifier above remains the independent check.
 - Tamper check: change any payload byte; expected: `"valid": false` with `Ed25519 signature verification failed over WHP-JCS-I1 canonical payload`.
 
 ## Vector 3 — live 402 terms shape
