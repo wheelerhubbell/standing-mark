@@ -46,7 +46,8 @@ import urllib.error
 API = "https://api.wheelerhubbellpublishing.com"
 ALIAS = "https://decisionintegrity.wheelerhubbellpublishing.com"
 SITE = "https://wheelerhubbellpublishing.com"
-RAW_SM = "https://raw.githubusercontent.com/wheelerhubbell/standing-mark/main"
+RAW_SM = "https://api.github.com/repos/wheelerhubbell/standing-mark/contents"
+RAW_HEADERS = {"Accept": "application/vnd.github.raw"}  # repo HEAD is the truth; the raw CDN mirror lags it
 REGISTRY = "https://registry.modelcontextprotocol.io/v0/servers?search=wheelerhubbell"
 NPM = "https://registry.npmjs.org/@wheelerhubbell%2fwhp-standing-client"
 PAYMENT_MIGRATION_DATE = "2026-11-16"
@@ -72,8 +73,11 @@ def record(check_id, surface, sot, ok, evidence):
     return ok
 
 
-def get(url, timeout=25):
-    req = urllib.request.Request(url, headers={"User-Agent": "whp-conformance-check/1.0"})
+def get(url, timeout=25, headers=None):
+    h = {"User-Agent": "whp-conformance-check/1.0"}
+    if headers:
+        h.update(headers)
+    req = urllib.request.Request(url, headers=h)
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:
             return r.status, r.read()
@@ -83,8 +87,8 @@ def get(url, timeout=25):
         return -1, str(e).encode()
 
 
-def get_json(url):
-    st, body = get(url)
+def get_json(url, headers=None):
+    st, body = get(url, headers=headers)
     if st != 200:
         return st, None
     try:
@@ -131,8 +135,8 @@ def main():
         record("D2", f"{ALIAS}{path}", f"SOT {name}", same, f"HTTP {sta}, {'identical' if same else 'DIFFERS'}")
 
     # --- D3: OpenAPI mirrors ---
-    for label, url in (("site", f"{SITE}/openapi.json"), ("standing-mark repo", f"{RAW_SM}/openapi.json")):
-        sto, body = get(url)
+    for label, url in (("site", f"{SITE}/openapi.json"), ("standing-mark repo", f"{RAW_SM}/openapi.json?ref=main")):
+        sto, body = get(url, headers=RAW_HEADERS if "api.github.com" in url else None)
         same = sto == 200 and body == s3_body
         record("D3", f"{label} openapi.json ({url})", "S3", same,
                "byte-identical" if same else f"HTTP {sto} or content drift")
@@ -173,7 +177,7 @@ def main():
         ("SKILL.md", ["x402"], None),
     ]
     for path, must, _ in doc_checks:
-        stf, fbody = get(f"{RAW_SM}/{path}")
+        stf, fbody = get(f"{RAW_SM}/{path}?ref=main", headers=RAW_HEADERS)
         ft = fbody.decode() if stf == 200 else ""
         missing = [m for m in must if m not in ft]
         # retired scheme may appear only on lines that name it retired
@@ -184,8 +188,8 @@ def main():
     # --- D8: agent cards ---
     profile_ver = (s1.get("profile") or "").rsplit("-", 1)[-1]
     for label, url in (("site agent-card-description.json", f"{SITE}/agent-card-description.json"),
-                       ("standing-mark a2a/agent-card.json", f"{RAW_SM}/a2a/agent-card.json")):
-        sta, card = get_json(url)
+                       ("standing-mark a2a/agent-card.json", f"{RAW_SM}/a2a/agent-card.json?ref=main")):
+        sta, card = get_json(url, headers=RAW_HEADERS if "api.github.com" in url else None)
         ver_ok = sta == 200 and card.get("version") == profile_ver
         instr_bad = sta == 200 and re.search(r'"description": "POST /v1/verification', json.dumps(card))
         record("D8", label, "S1 profile", bool(ver_ok and not instr_bad),
