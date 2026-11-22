@@ -64,7 +64,7 @@ The facilitator verifies and settles; no customer ETH gas is required. The servi
 
 ## 5. Verify the result
 
-Server-side: the contract lists `POST /v1/verification` for a signature-only check, but that route is not currently deployed (it returns 404, observed 2026-11-21). Until the contract and the route agree, verify offline.
+Server-side: `POST /v1/verification` is deployed and performs a signature-only check (verified live 2026-11-21: valid envelope in, `"valid": true` out; tampered envelope, `"valid": false`).
 
 Offline, independently: run `verification/verify.py` or `verification/verify.js` against the pinned issuer key. They recompute the key pin, check the protected header, re-canonicalize `{"protected": ..., "payload": ...}` under WHP-JCS-I1 and verify the Ed25519 signature. Test vectors are in `docs/test-vectors.md`.
 

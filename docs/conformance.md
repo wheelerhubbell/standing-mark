@@ -33,12 +33,12 @@ of truth changes, every dependent surface changes with it, and
 | D5 | `developers.html` | S1 payment | teaches the current scheme only |
 | D6 | press page | S1 | presents no retired endpoint as live |
 | D7 | repo docs (payment, quick-start, test-vectors, SKILL) | S1 | current scheme only; retired scheme named retired |
-| D8 | agent cards (site + repo) | S1 profile | version matches; no unannotated dead route |
-| D9 | every route S1/S3 advertise | S1, S3 | resolves non-404 |
+| D8 | agent cards (site + repo) | S1 profile | version matches |
+| D9 | every route S1/S3 advertise | S1, S3 | resolves non-404 on its advertised method |
 | D10 | MCP registry records | S1 | active records' remotes resolve; none point at retired hosts |
 | D11 | reception component | S2 | pinned issuer key == published key id |
 | D12 | publications | S1.publications | every named page resolves; alias host serves S5 |
-| D13 | npm registry | S1 payment | no current package contradicts the source SDKs |
+| D13 | npm registry | S1 payment | no current package contradicts the source SDKs. Operator decision 2026-11-22: left as published; reported as DECIDED, not blocking |
 | D14 | issuer key integrity | S2 vs S1 | key id == sha256(published key); contract names the issuer doc |
 
 ## Propagation rule
@@ -91,8 +91,22 @@ Gate rules:
 4. `tests/run_adversarial_tests.py` proves the gate offline against the
    November 21 failure shapes (dead advertised route, stale SDK, hosted-MCP
    claim, retired-host registry record, docs/discovery agreeing against
-   runtime, offline-only capability presented as live). The workflow runs it
-   on every release attempt.
+   runtime, a nonexistent route presented as live). The workflow runs it on
+   every release attempt.
 5. The checker remains read-only. Automated writes (auto-sync, self-healing
    deploys, upload wrappers that roll back) remain a separate proposal
    requiring the operator's specific word.
+
+## Method note (corrected 2026-11-21)
+
+Route existence is probed with the advertised method. A GET-only probe
+misreads POST routes: `/v1/evaluate` answers GET with 405 but
+`/v1/verification` answers GET with 404, and that 404 was recorded on the
+morning of 2026-11-21 as "route not deployed" and propagated to SKILL.md,
+quick-start, test-vectors, the Postman collection, both agent cards, the
+site's llms.txt, and this checker's own open-decision list. The route was
+functional for its advertised method the whole time; the claim was a probe
+artifact. Two rules follow: existence checks must match the advertised
+method, and prose claims that something does NOT exist are not
+machine-checked by this suite, so they must be re-examined adversarially
+(probe the behavior the claim denies) before they are recorded as fact.
