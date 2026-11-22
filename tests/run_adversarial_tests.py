@@ -5,8 +5,8 @@ Each case copies the captured coherent snapshot (tests/fixtures/base), injects
 one of the November 21 failure shapes, and proves the conformance examination
 in --gate mode refuses release authorization (exit 1) and names the check that
 blocks. The control case proves the snapshot itself is coherent: advisory mode
-passes it, and gate mode blocks it only on the one declared open operator
-decision (npm), nothing else.
+passes it, and gate mode passes it with the one operator-decided contradiction
+(npm, D13) still reported as DECIDED, nothing hidden.
 
 Run: python3 tests/run_adversarial_tests.py
 """
@@ -74,10 +74,10 @@ def case(name, mutation, expect, gate=True):
 case("control: coherent snapshot passes advisory mode",
      lambda w: None,
      [("exit", 0), ("has", "0 FAIL")], gate=False)
-case("control: gate blocks only the declared open decision",
+case("control: gate passes and still reports the decided npm contradiction",
      lambda w: None,
-     [("exit", 1), ("has", "D13 npm @wheelerhubbell/whp-standing-client"),
-      ("has", "POST -> HTTP 400"), ("has", "0 FAIL"), ("has", "GATE: release blocked by 1")])
+     [("exit", 0), ("has", "D13 npm @wheelerhubbell/whp-standing-client"), ("has", "DECIDED"),
+      ("has", "POST -> HTTP 400"), ("has", "0 FAIL"), ("has", "0 known open operator decisions")])
 
 # --- adversarial case 1: contract advertises a route runtime does not serve ---
 case("contract lists a route the deployment 404s",
@@ -91,9 +91,9 @@ def stale_npm(w):
     n["time"][latest] = "2026-10-01T00:00:00.000Z"
     store(w, cc.NPM, json.dumps(n))
 
-case("npm SDK predates the 2026-11-16 payment migration",
+case("npm SDK predates the 2026-11-16 payment migration: decided, reported, not blocking",
      stale_npm,
-     [("exit", 1), ("has", "D13 npm @wheelerhubbell/whp-standing-client"), ("has", "GATE: release blocked")])
+     [("exit", 0), ("has", "D13 npm @wheelerhubbell/whp-standing-client"), ("has", "DECIDED"), ("has", "0 FAIL")])
 
 # --- adversarial case 3: press presents hosted MCP access that does not exist ---
 def press_mcp(w):

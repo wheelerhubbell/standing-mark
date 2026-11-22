@@ -38,7 +38,7 @@ of truth changes, every dependent surface changes with it, and
 | D10 | MCP registry records | S1 | active records' remotes resolve; none point at retired hosts |
 | D11 | reception component | S2 | pinned issuer key == published key id |
 | D12 | publications | S1.publications | every named page resolves; alias host serves S5 |
-| D13 | npm registry | S1 payment | no current package contradicts the source SDKs |
+| D13 | npm registry | S1 payment | no current package contradicts the source SDKs. Operator decision 2026-11-22: left as published; reported as DECIDED, not blocking |
 | D14 | issuer key integrity | S2 vs S1 | key id == sha256(published key); contract names the issuer doc |
 
 ## Propagation rule

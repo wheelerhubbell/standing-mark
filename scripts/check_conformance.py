@@ -76,8 +76,13 @@ GATE = os.environ.get("WHP_CONFORMANCE_GATE") == "1"
 
 # Decisions that are the operator's to make. Until each is decided, the
 # checker reports it here instead of failing. Remove the entry when decided.
-KNOWN_OPEN = {
-    "D13 npm @wheelerhubbell/whp-standing-client": "latest published package predates the 2026-11-16 payment migration. Operator decision pending: deprecate it or publish a new version.",
+KNOWN_OPEN = {}
+
+# Decisions the operator has made and that leave a known contradiction in place.
+# They stay visible in every run and do not block the gate. Remove the entry
+# to make the check blocking again.
+DECIDED = {
+    "D13 npm @wheelerhubbell/whp-standing-client": "Operator decision 2026-11-22: the published package is left as is, and the npm release is not part of the release gate. The contradiction is accepted and recorded, not resolved.",
 }
 
 RESULTS = []  # (check_id, surface, sot, status, evidence)
@@ -90,6 +95,9 @@ def record(check_id, surface, sot, ok, evidence):
             status = "OPEN"
             evidence = evidence + " | " + note
             break
+    if status == "FAIL" and check_id in DECIDED:
+        status = "DECIDED"
+        evidence = evidence + " | " + DECIDED[check_id]
     RESULTS.append((check_id, surface, sot, status, evidence))
     return ok
 
@@ -358,7 +366,7 @@ def finish():
         if status == "OPEN":
             opens += 1
         print(f"{cid.ljust(width)}  {status.ljust(6)}  {surface} [{sot}] -- {evidence}")
-    print(f"\n{len(RESULTS)} checks: {len(RESULTS)-fails-opens} pass, {opens} known open operator decisions, {fails} FAIL")
+    print(f"\n{len(RESULTS)} checks: {sum(1 for r in RESULTS if r[3] == 'PASS')} pass, {opens} known open operator decisions, {sum(1 for r in RESULTS if r[3] == 'DECIDED')} decided and recorded, {fails} FAIL")
     if opens:
         print("\nKnown open decisions (operator's word needed):")
         for k, v in KNOWN_OPEN.items():
